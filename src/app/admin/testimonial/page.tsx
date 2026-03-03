@@ -96,8 +96,11 @@ export default function AdminTestimonialPage() {
 
   return (
     <AdminShell>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="font-serif text-2xl font-bold text-stone-100">Testimonial</h1>
+      <div className="flex items-center justify-between mb-2">
+        <div>
+          <h1 className="font-serif text-2xl font-bold text-stone-100">Testimonial</h1>
+          <p className="text-stone-500 text-xs mt-1">Testimoni pelanggan — auto-slider di homepage seksyen "Dipercayai Ramai". 2 testimoni per slide.</p>
+        </div>
         <button
           onClick={openAdd}
           className="rounded-xl border border-stone-700 bg-herb-surface px-4 py-2 text-sm text-herb-gold hover:border-herb-gold/50 transition"

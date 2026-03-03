@@ -1,20 +1,34 @@
 import Link from 'next/link';
+import { getSiteContent, getMilestones } from '@/lib/data';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: 'Tentang — Dunia Herbs',
   description: 'Cerita 20 tahun Dunia Herbs — perintis lotion pati halia di Malaysia.',
 };
 
-const milestones = [
-  { year: '2004', title: 'Pelancaran', desc: 'Lotion Mustajab Pati Halia dilancarkan. Produk perintis lotion halia pertama di Malaysia.' },
-  { year: '2006', title: 'Pengembangan', desc: 'Variasi baru diperkenalkan — Lime & Ginger dan Super Hot dengan capsicum.' },
-  { year: '2010', title: 'Pengiktirafan', desc: 'Halal JAKIM dan kelulusan KKM diperoleh. Mula membina rangkaian stockist.' },
-  { year: '2014', title: 'Eksport Antarabangsa', desc: 'Produk memasuki pasaran Arab Saudi — langkah pertama ke peringkat antarabangsa.' },
-  { year: '2018', title: '30+ Stockist', desc: 'Rangkaian stockist berkembang ke lebih 30 lokasi di Malaysia dan Singapura.' },
-  { year: '2024', title: '20 Tahun Legenda', desc: '40+ stockist, 8 variasi produk, dipercayai generasi di seluruh Asia Tenggara.' },
+const milestonesFallback = [
+  { year: '2005', title: 'Pelancaran', desc: 'Lotion Mustajab Pati Halia dilancarkan. Produk perintis lotion halia pertama di Malaysia.' },
+  { year: '2014', title: 'Eksport', desc: 'Produk memasuki pasaran Arab Saudi.' },
+  { year: '2024', title: '20 Tahun', desc: '40+ stockist, dipercayai generasi.' },
 ];
 
-export default function TentangPage() {
+export default async function TentangPage() {
+  const [content, dbMilestones] = await Promise.all([getSiteContent(), getMilestones()]);
+
+  const milestones =
+    dbMilestones.length > 0
+      ? dbMilestones.map((m) => ({
+          year: m.year || '',
+          title: m.title || '',
+          desc: m.description || '',
+        }))
+      : milestonesFallback;
+
+  const aboutQuote = content.about_quote || 'Saya mulakan Dunia Herbs selepas lebih 20 tahun mencuba pelbagai bisnes. Apa yang bermula dari kegagalan, menjadi kekuatan. Setiap botol Lotion Mustajab mengandungi semangat untuk membantu orang lain.';
+  const aboutFounder = content.about_founder || 'Rushdi Abdullah';
+  const aboutDescription = content.about_description || 'Bermula dari kegigihan seorang usahawan Malaysia, Dunia Herbs diasaskan dengan satu matlamat — menghasilkan produk herba semula jadi yang benar-benar berkesan. Lebih 20 tahun kemudian, Lotion Mustajab Pati Halia telah menjadi legenda di pasaran Malaysia.';
   return (
     <div className="min-h-screen px-6 py-12 max-w-4xl mx-auto">
       <Link
@@ -28,23 +42,19 @@ export default function TentangPage() {
       </Link>
 
       {/* Hero */}
-      <p className="text-herb-gold/80 text-sm tracking-widest uppercase mb-2">Sejak 2004</p>
+      <p className="text-herb-gold/80 text-sm tracking-widest uppercase mb-2">Sejak 2005</p>
       <h1 className="font-serif text-3xl md:text-4xl font-bold text-stone-50 mb-4">Cerita Dunia Herbs</h1>
       <p className="text-stone-400 leading-relaxed max-w-2xl">
-        Bermula dari kegigihan seorang usahawan Malaysia, Dunia Herbs diasaskan dengan satu matlamat — 
-        menghasilkan produk herba semula jadi yang benar-benar berkesan. Lebih 20 tahun kemudian, 
-        Lotion Mustajab Pati Halia telah menjadi legenda di pasaran Malaysia.
+        {aboutDescription}
       </p>
 
       {/* Founder */}
       <div className="mt-12 rounded-2xl border border-herb-gold/20 bg-herb-surface/60 p-8 backdrop-blur-md">
         <p className="text-herb-gold/60 text-4xl font-serif leading-none mb-4">"</p>
         <p className="text-stone-300 italic leading-relaxed text-lg">
-          Saya mulakan Dunia Herbs selepas lebih 20 tahun mencuba pelbagai bisnes. 
-          Apa yang bermula dari kegagalan, menjadi kekuatan. Setiap botol Lotion Mustajab 
-          mengandungi semangat untuk membantu orang lain.
+          {aboutQuote}
         </p>
-        <p className="mt-4 text-herb-gold font-medium">Rushdi Abdullah</p>
+        <p className="mt-4 text-herb-gold font-medium">{aboutFounder}</p>
         <p className="text-stone-500 text-sm">Pengasas, Dunia Herbs</p>
       </div>
 
@@ -63,14 +73,14 @@ export default function TentangPage() {
         <div className="rounded-2xl border border-stone-700/50 bg-herb-surface/60 p-6 backdrop-blur-md">
           <span className="text-herb-gold text-2xl">✦</span>
           <h3 className="font-semibold text-stone-100 mt-3">Terbukti Berkesan</h3>
-          <p className="text-stone-500 text-sm mt-1">20 tahun di pasaran. Dipercayai lebih 100,000 pelanggan setia.</p>
+          <p className="text-stone-500 text-sm mt-1">20 tahun di pasaran. Dipercayai lebih 80,000 pelanggan setia.</p>
         </div>
       </div>
 
       {/* Timeline */}
       <div className="mt-16">
-        <p className="text-herb-gold/80 text-sm tracking-widest uppercase mb-2">Perjalanan Kami</p>
-        <h2 className="font-serif text-2xl font-bold text-stone-50 mb-8">20 Tahun Sejarah</h2>
+        <p className="text-herb-gold/80 text-sm tracking-widest uppercase mb-2">{content.sejarah_label || 'Perjalanan Kami'}</p>
+        <h2 className="font-serif text-2xl font-bold text-stone-50 mb-8">{content.sejarah_title || '20 Tahun Sejarah'}</h2>
         <div className="space-y-6">
           {milestones.map((m, i) => (
             <div key={i} className="flex gap-6">

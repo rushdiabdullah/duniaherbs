@@ -204,7 +204,7 @@ export default function AdminMilestonesPage() {
                   onChange={(e) => setForm((f) => ({ ...f, year: e.target.value }))}
                   required
                   className="w-full rounded-xl border border-stone-700 bg-herb-surface px-4 py-2 text-stone-100 placeholder-stone-500 focus:border-herb-gold/50 focus:outline-none"
-                  placeholder="cth: 2004"
+                  placeholder="cth: 2005"
                 />
               </div>
               <div>

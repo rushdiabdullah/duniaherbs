@@ -24,8 +24,8 @@ export function AnimateIn({
 
   return (
     <motion.div
-      initial={reduceMotion ? false : { opacity: 0, x, y }}
-      whileInView={reduceMotion ? false : { opacity: 1, x: 0, y: 0 }}
+      initial={reduceMotion ? undefined : { opacity: 0, x, y }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, x: 0, y: 0 }}
       viewport={{ once, margin: '-50px' }}
       transition={{ duration: reduceMotion ? 0 : 0.5, delay, ease: [0.25, 0.46, 0.45, 0.94] }}
       className={className}
@@ -47,8 +47,8 @@ export function AnimateStagger({
   const reduceMotion = useReducedMotion();
   return (
     <motion.div
-      initial={reduceMotion ? false : 'hidden'}
-      whileInView={reduceMotion ? false : 'visible'}
+      initial={reduceMotion ? undefined : 'hidden'}
+      whileInView={reduceMotion ? undefined : 'visible'}
       viewport={{ once: true, margin: '-30px' }}
       variants={{
         visible: { transition: { staggerChildren: reduceMotion ? 0 : staggerDelay } },

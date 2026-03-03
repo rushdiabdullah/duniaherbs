@@ -8,7 +8,10 @@ import { ShimmerButton } from '@/components/ShimmerButton';
 import { Marquee } from '@/components/Marquee';
 import { TestimonialSlider } from '@/components/TestimonialSlider';
 import { VideoShowcase } from '@/components/VideoShowcase';
+import { VideoGallery } from '@/components/VideoGallery';
 import { getProducts, getSiteContent, getMilestones, getFaqs } from '@/lib/data';
+
+export const dynamic = 'force-dynamic';
 
 const productsFallback = [
   {
@@ -58,23 +61,23 @@ const productsFallback = [
   },
   {
     id: '7',
-    name: 'Lotion Mustajab Pati Halia 250ml',
-    tagline: 'Saiz keluarga • Nilai lebih jimat',
-    price: 'RM 38.90',
+    name: 'Lotion Mustajab Pati Halia 65ml',
+    tagline: 'Saiz mini • Travel size',
+    price: 'RM 14.90',
     badge: 'Jimat',
     heat: 'Mild',
   },
   {
     id: '8',
-    name: 'Lotion Mustajab Super Hot 250ml',
-    tagline: 'Saiz keluarga • Capsicum workout',
-    price: 'RM 42.90',
+    name: 'Lotion Mustajab Super Hot 65ml',
+    tagline: 'Saiz mini • Capsicum workout',
+    price: 'RM 15.90',
     heat: 'Hot',
   },
 ];
 
 const defaultBenefits = [
-  { icon: '🩹', title: 'Sakit sendi & otot', desc: 'Legakan kesakitan dengan pati halia semula jadi' },
+  { icon: '🩹', title: 'Ketidakselesaan sendi & otot', desc: 'Membantu melegakan ketidakselesaan dengan pati halia semula jadi' },
   { icon: '🔥', title: 'Bakar lemak', desc: 'Bantu proses pembakaran lemak & shaping' },
   { icon: '🤱', title: 'Ibu bersalin', desc: 'Sesuai untuk urutan postpartum' },
   { icon: '✨', title: 'Selulit & kedut', desc: 'Kurangkan penampilan selulit' },
@@ -101,8 +104,8 @@ export default async function HomePage() {
       }))
     : productsFallback;
 
-  const whatsapp = content.whatsapp || process.env.NEXT_PUBLIC_WHATSAPP || '60123456789';
-  const WHATSAPP_LINK = `https://wa.me/${whatsapp.replace(/\D/g, '')}`;
+  const CONTACT_EMAIL = 'admin@duniaherbs.com.my';
+  const EMAIL_LINK = `mailto:${CONTACT_EMAIL}`;
 
   const benefits = [1, 2, 3, 4, 5].map((i) => ({
     icon: content[`benefit_${i}_icon`] || defaultBenefits[i - 1].icon,
@@ -113,7 +116,7 @@ export default async function HomePage() {
   const timeline = milestones.length > 0
     ? milestones.map((m) => ({ year: m.year || '', title: m.title || '', desc: m.description || '' }))
     : [
-        { year: '2004', title: 'Pelancaran', desc: 'Lotion Mustajab Pati Halia dilancarkan — perintis lotion halia di Malaysia.' },
+        { year: '2005', title: 'Pelancaran', desc: 'Lotion Mustajab Pati Halia dilancarkan — perintis lotion halia di Malaysia.' },
         { year: '2014', title: 'Eksport', desc: 'Produk memasuki pasaran Arab Saudi.' },
         { year: '2024', title: '20 Tahun', desc: '40+ stockist, dipercayai generasi.' },
       ];
@@ -148,39 +151,49 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_30%_10%,rgba(30,60,140,0.14),transparent)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_30%_at_70%_20%,rgba(40,80,180,0.06),transparent)]" />
         <div className="relative px-6 py-20 md:py-28 max-w-6xl mx-auto">
-          {/* 20 Tahun badge - luxury ribbon */}
           <AnimateIn delay={0}>
             <div className="flex justify-center mb-8">
-              <div className="inline-flex items-center gap-2 rounded-full border border-herb-gold/40 bg-herb-gold/10 px-5 py-2 backdrop-blur-sm">
-                <span className="text-herb-gold text-xs font-medium tracking-[0.2em] uppercase">
-                  {content.hero_badge || '20 Tahun di Pasaran Malaysia'}
-                </span>
-                <span className="text-herb-gold/60">✦</span>
-              </div>
+              {content.hero_badge_image ? (
+                <Image
+                  src={content.hero_badge_image}
+                  alt={content.hero_badge || 'Dunia Herbs'}
+                  width={520}
+                  height={180}
+                  className="h-[144px] md:h-[187px] w-auto object-contain"
+                  priority
+                />
+              ) : (
+                <div className="inline-flex items-center gap-2 rounded-full border border-herb-gold/40 bg-herb-gold/10 px-5 py-2 backdrop-blur-sm">
+                  <span className="text-herb-gold text-xs font-medium tracking-[0.2em] uppercase">
+                    {content.hero_badge || '20 Tahun di Pasaran Malaysia'}
+                  </span>
+                  <span className="text-herb-gold/60">✦</span>
+                </div>
+              )}
             </div>
           </AnimateIn>
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-[2fr_3fr] gap-8 items-center">
             <AnimateIn delay={0.1}>
               <div>
-                <p className="text-herb-gold/90 text-sm font-medium tracking-[0.15em] uppercase mb-3">
-                  {content.hero_subtitle || 'Dunia Herbs • Trusted Since 2004'}
+                <p className="text-herb-gold/90 text-xs font-medium tracking-[0.15em] uppercase mb-2">
+                  {content.hero_subtitle || 'Dunia Herbs • Trusted Since 2005'}
                 </p>
-              <h1 className="font-serif text-4xl md:text-6xl font-bold tracking-tight text-stone-50">
+              <h1 className="font-serif text-2xl md:text-4xl font-bold tracking-tight text-stone-50">
                 {content.hero_title || 'Memang Mustajab'}
               </h1>
-              <p className="mt-4 text-stone-400 text-lg max-w-md leading-relaxed">
+              <p className="mt-3 text-stone-400 text-sm md:text-base max-w-sm leading-relaxed">
                 {content.hero_description || 'Lotion Mustajab Pati Halia — produk #1 herba halia di Malaysia. KKM & Halal JAKIM.'}
               </p>
-              <div className="mt-8 flex flex-wrap gap-4">
-                <ShimmerButton href={WHATSAPP_LINK} external>
-                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+              <div className="mt-6 flex flex-wrap gap-3">
+                <ShimmerButton href="/fasha">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
-                  {content.hero_cta_whatsapp || 'WhatsApp Kami'}
+                  Fasha Sandha
                 </ShimmerButton>
                 <Link
                   href="#produk"
-                  className="inline-flex items-center gap-2 rounded-xl border border-herb-gold/50 px-6 py-3.5 text-sm font-semibold text-herb-gold transition hover:border-herb-gold hover:bg-herb-gold/10"
+                  className="inline-flex items-center gap-2 rounded-xl border border-herb-gold/50 px-5 py-3 text-sm font-semibold text-herb-gold transition hover:border-herb-gold hover:bg-herb-gold/10"
                 >
                   {content.hero_cta_produk || 'Lihat Produk'}
                 </Link>
@@ -188,15 +201,14 @@ export default async function HomePage() {
             </div>
             </AnimateIn>
             <AnimateIn delay={0.2} direction="right">
-            <div className="relative aspect-square max-w-md mx-auto">
-              {/* Placeholder: replace with real product image */}
+            <div className="relative aspect-[4/3] w-full mx-auto">
               <div className="absolute inset-0 rounded-3xl overflow-hidden border border-blue-950/40 bg-herb-surface/80 backdrop-blur-sm shadow-2xl shadow-black/30">
                 <Image
-                  src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&h=600&fit=crop"
+                  src={content.hero_image || 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&h=800&fit=crop'}
                   alt="Lotion Mustajab Dunia Herbs"
                   fill
                   className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 400px"
+                  sizes="(max-width: 768px) 100vw, 576px"
                   priority
                 />
               </div>
@@ -206,17 +218,17 @@ export default async function HomePage() {
         </div>
       </header>
 
-      {/* Duta Dunia Herbs - Video Showcase */}
+      {/* Duta Dunia Herbs - Grid Gallery */}
       <section className="px-6 py-16 max-w-6xl mx-auto">
         <AnimateIn>
           <p className="text-herb-gold/80 text-sm tracking-widest uppercase mb-2">{content.duta_label || 'Duta Rasmi'}</p>
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-50 mb-2">{content.duta_title || 'Fasha Sandha × Dunia Herbs'}</h2>
           <p className="text-stone-400 mb-4">{content.duta_desc || 'Tonton video eksklusif daripada duta rasmi kami — Fasha Sandha'}</p>
-          <Link href="/fasha" className="inline-block text-sm text-herb-gold hover:text-herb-goldLight transition font-medium">
+          <Link href="/fasha" className="inline-block text-sm text-herb-gold hover:text-herb-goldLight transition font-medium mb-8">
             {content.duta_link_text || 'Lihat landing page khas Fasha →'}
           </Link>
         </AnimateIn>
-        <VideoShowcase />
+        <VideoGallery />
       </section>
 
       {/* Marquee ticker */}
@@ -238,13 +250,23 @@ export default async function HomePage() {
         <ProductCarousel products={products} />
       </section>
 
+      {/* Video Iklan Komersial */}
+      <section className="px-6 py-16 max-w-6xl mx-auto">
+        <AnimateIn>
+          <p className="text-herb-gold/80 text-sm tracking-widest uppercase mb-2">{content.video_label || 'Tonton'}</p>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-50 mb-2">{content.video_title || 'Video Iklan'}</h2>
+          <p className="text-stone-400 mb-10">{content.video_subtitle || 'Koleksi video komersial Dunia Herbs'}</p>
+        </AnimateIn>
+        <VideoShowcase />
+      </section>
+
       <GoldDivider />
 
       {/* Sejarah / Timeline */}
       <section className="px-6 py-16 max-w-4xl mx-auto">
         <AnimateIn>
           <p className="text-herb-gold/80 text-sm tracking-widest uppercase mb-2">{content.sejarah_label || 'Legasi Kami'}</p>
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-50 mb-10">{content.sejarah_title || 'Sejak 2004'}</h2>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-50 mb-10">{content.sejarah_title || 'Sejak 2005'}</h2>
         </AnimateIn>
         <AnimateStagger className="space-y-8">
           {timeline.map((t, i) => (
@@ -312,19 +334,17 @@ export default async function HomePage() {
         <AnimateStagger className="grid md:grid-cols-3 gap-6">
           <AnimateStaggerItem>
           <a
-            href={WHATSAPP_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-4 rounded-2xl border border-blue-950/40 bg-herb-surface/60 p-6 backdrop-blur-md transition hover:border-green-500/50 hover:bg-herb-surface/80"
+            href={EMAIL_LINK}
+            className="flex items-center gap-4 rounded-2xl border border-blue-950/40 bg-herb-surface/60 p-6 backdrop-blur-md transition hover:border-herb-gold/50 hover:bg-herb-surface/80"
           >
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-600/20 text-green-400">
-              <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-herb-gold/20 text-herb-gold">
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
             </div>
             <div>
-              <h3 className="font-semibold text-stone-100">WhatsApp</h3>
-              <p className="text-sm text-stone-500">Chat terus dengan kami</p>
+              <h3 className="font-semibold text-stone-100">Email</h3>
+              <p className="text-sm text-stone-500">admin@duniaherbs.com.my</p>
             </div>
           </a>
           </AnimateStaggerItem>
@@ -395,7 +415,7 @@ export default async function HomePage() {
             {/* Brand */}
             <div className="md:max-w-xs">
               <p className="font-serif font-bold text-herb-gold text-xl">Dunia Herbs</p>
-              <p className="text-stone-500 text-sm mt-2 leading-relaxed">{content.footer_brand_desc || 'Memang Mustajab — Perintis lotion pati halia di Malaysia sejak 2004. KKM & Halal JAKIM.'}</p>
+              <p className="text-stone-500 text-sm mt-2 leading-relaxed">{content.footer_brand_desc || 'Memang Mustajab — Perintis lotion pati halia di Malaysia sejak 2005. KKM & Halal JAKIM.'}</p>
             </div>
 
             {/* Pautan */}
@@ -404,8 +424,11 @@ export default async function HomePage() {
               <div className="flex flex-col gap-2 text-sm">
                 <Link href="/tentang" className="text-stone-500 hover:text-herb-gold transition">Tentang</Link>
                 <Link href="/#produk" className="text-stone-500 hover:text-herb-gold transition">Produk</Link>
+                <Link href="/fasha" className="text-stone-500 hover:text-herb-gold transition">Fasha Sandha</Link>
                 <Link href="/stockist" className="text-stone-500 hover:text-herb-gold transition">Stockist</Link>
                 <Link href="/faq" className="text-stone-500 hover:text-herb-gold transition">FAQ</Link>
+                <Link href="/bersalin" className="text-stone-500 hover:text-herb-gold transition">Selepas Bersalin</Link>
+                <Link href="/info" className="text-stone-500 hover:text-herb-gold transition">Info AM</Link>
                 <Link href="/polisi" className="text-stone-500 hover:text-herb-gold transition">Polisi</Link>
               </div>
             </div>
@@ -414,21 +437,23 @@ export default async function HomePage() {
             <div>
               <p className="text-stone-400 text-xs font-medium tracking-widest uppercase mb-3">Ikuti Kami</p>
               <div className="flex gap-3">
-                {/* Facebook */}
-                <a href="https://www.facebook.com/DuniaHerbsOfficial" target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-950/40 bg-herb-surface/60 text-[#1877F2] transition hover:border-[#1877F2]/50 hover:bg-[#1877F2]/10 hover:scale-110" aria-label="Facebook">
+                {content.facebook && (
+                <a href={content.facebook} target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-950/40 bg-herb-surface/60 text-[#1877F2] transition hover:border-[#1877F2]/50 hover:bg-[#1877F2]/10 hover:scale-110" aria-label="Facebook">
                   <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 </a>
-                {/* Instagram */}
-                <a href="https://www.instagram.com/duniaherbsofficial" target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-950/40 bg-herb-surface/60 text-[#E4405F] transition hover:border-[#E4405F]/50 hover:bg-[#E4405F]/10 hover:scale-110" aria-label="Instagram">
+                )}
+                {content.instagram && (
+                <a href={content.instagram} target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-950/40 bg-herb-surface/60 text-[#E4405F] transition hover:border-[#E4405F]/50 hover:bg-[#E4405F]/10 hover:scale-110" aria-label="Instagram">
                   <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
                 </a>
-                {/* TikTok */}
-                <a href="https://www.tiktok.com/@duniaherbsofficial" target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-950/40 bg-herb-surface/60 text-stone-100 transition hover:border-stone-100/50 hover:bg-stone-100/10 hover:scale-110" aria-label="TikTok">
+                )}
+                {content.tiktok && (
+                <a href={content.tiktok} target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-950/40 bg-herb-surface/60 text-stone-100 transition hover:border-stone-100/50 hover:bg-stone-100/10 hover:scale-110" aria-label="TikTok">
                   <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 00-.79-.05A6.34 6.34 0 003.15 15.2a6.34 6.34 0 0010.86 4.46V13.2a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-.81-.07 4.83 4.83 0 01-2.38-1.1V6.69h4z"/></svg>
                 </a>
-                {/* WhatsApp */}
-                <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-950/40 bg-herb-surface/60 text-[#25D366] transition hover:border-[#25D366]/50 hover:bg-[#25D366]/10 hover:scale-110" aria-label="WhatsApp">
-                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                )}
+                <a href={EMAIL_LINK} className="flex h-10 w-10 items-center justify-center rounded-full border border-blue-950/40 bg-herb-surface/60 text-herb-gold transition hover:border-herb-gold/50 hover:bg-herb-gold/10 hover:scale-110" aria-label="Email">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                 </a>
               </div>
 

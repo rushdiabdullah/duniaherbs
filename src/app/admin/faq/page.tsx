@@ -120,14 +120,23 @@ export default function AdminFaqPage() {
   return (
     <AdminShell>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="font-serif text-2xl font-bold text-stone-100">FAQ</h1>
+        <div className="flex items-center justify-between mb-2">
+          <div>
+            <h1 className="font-serif text-2xl font-bold text-stone-100">FAQ</h1>
+            <p className="text-stone-500 text-xs mt-1">Soalan lazim yang dipaparkan di halaman /faq dan preview 3 soalan di homepage bawah</p>
+          </div>
+          <div className="flex items-center gap-2">
+          <a href="/faq" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 rounded-xl border border-stone-700 px-3 py-2 text-xs text-stone-400 hover:text-herb-gold hover:border-herb-gold/50 transition">
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+            Preview
+          </a>
           <button
             onClick={openCreate}
             className="rounded-xl border border-stone-700 bg-herb-surface px-4 py-2 text-sm font-medium text-herb-gold hover:border-herb-gold/50 transition"
           >
             Tambah FAQ
           </button>
+          </div>
         </div>
 
         {loading ? (

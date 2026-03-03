@@ -1,18 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { products, getProduct } from '@/lib/products';
+import { getProduct, getProducts, getSiteContent } from '@/lib/data';
+import AddToCartButton from '@/components/AddToCartButton';
 
-const productImages: Record<string, string> = {
-  '1': 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&h=600&fit=crop',
-  '2': 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=600&h=600&fit=crop',
-  '3': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=600&fit=crop',
-  '4': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=600&fit=crop',
-  '5': 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=600&h=600&fit=crop',
-  '6': 'https://images.unsplash.com/photo-1597843786411-a7fa8ad44a95?w=600&h=600&fit=crop',
-  '7': 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&h=600&fit=crop',
-  '8': 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=600&fit=crop',
-};
+export const dynamic = 'force-dynamic';
+
+const PRODUCT_IMAGE_FALLBACK = 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=600&h=600&fit=crop';
 
 const heatColors: Record<string, string> = {
   Mild: 'bg-herb-sage/20 text-herb-sage',
@@ -20,27 +14,47 @@ const heatColors: Record<string, string> = {
   Extreme: 'bg-red-500/20 text-red-400',
 };
 
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP || '60123456789';
+const productsFallback: Record<string, { id: string; name: string; tagline: string; price: string; badge?: string; heat?: string; size: string; description: string; benefits: string[]; usage_info: string; image_url?: string }> = {
+  '1': { id: '1', name: 'Lotion Mustajab Pati Halia', tagline: 'Multi-purpose • Sesuai ibu bersalin', price: 'RM 22.90', badge: 'Bestseller', heat: 'Mild', size: '130ml', description: 'Lotion Mustajab Pati Halia ialah produk perintis Dunia Herbs yang telah menjadi kegemaran ramai selama lebih 20 tahun.', benefits: ['Membantu melegakan ketidakselesaan sendi & otot', 'Sesuai untuk urutan postpartum', 'Kurangkan kembung perut', 'Mudah diserap, tidak berminyak'], usage_info: 'Sapu pada bahagian yang dikehendaki. Untuk luaran sahaja.' },
+  '2': { id: '2', name: 'Lotion Mustajab Lime & Ginger', tagline: 'Pati halia + limau nipis', price: 'RM 22.90', heat: 'Mild', size: '130ml', description: 'Gabungan pati halia dan limau nipis untuk kesan yang menyegarkan.', benefits: ['Gabungan halia & limau nipis', 'Segar dan menyegarkan', 'Membantu melegakan ketidakselesaan sendi & otot'], usage_info: 'Sapu pada sendi, otot atau abdomen. Untuk luaran sahaja.' },
+  '3': { id: '3', name: 'Lotion Mustajab Super Hot', tagline: 'Dengan capsicum • Untuk workout', price: 'RM 24.90', badge: 'Popular', heat: 'Hot', size: '130ml', description: 'Diformulasi khas dengan capsicum untuk tahap kehangatan yang lebih tinggi.', benefits: ['Capsicum untuk haba maksimum', 'Sesuai untuk workout & sukan', 'Bantu proses pembakaran lemak'], usage_info: 'Sapu sebelum atau selepas senaman. Untuk luaran sahaja.' },
+  '4': { id: '4', name: 'Lotion Mustajab Extra Hot', tagline: 'Shaping • Extra halia', price: 'RM 23.90', heat: 'Hot', size: '130ml', description: 'Versi extra hot dengan kandungan halia yang lebih pekat.', benefits: ['Extra halia untuk kesan lebih kuat', 'Fokus shaping & pembakaran lemak', 'Kurangkan penampilan selulit'], usage_info: 'Sapu pada abdomen dan kawasan yang ingin dibentuk. Untuk luaran sahaja.' },
+  '5': { id: '5', name: 'Lotion Mustajab Extreme Hot', tagline: 'Kepanasan maksimum • Untuk sukan lasak', price: 'RM 25.90', badge: 'Terbaru', heat: 'Extreme', size: '130ml', description: 'Tahap kehangatan paling tinggi dalam rangkaian Mustajab.', benefits: ['Kehangatan tahap maksimum', 'Untuk sukan lasak & atlet', 'Pembakaran lemak intensif'], usage_info: 'Sapu pada otot sebelum/selepas sukan lasak. Untuk luaran sahaja.' },
+  '6': { id: '6', name: 'Lotion Mustajab Extra Ginger', tagline: 'Halia berganda • Kehidupan aktif', price: 'RM 23.90', heat: 'Hot', size: '130ml', description: 'Mengandungi halia berganda untuk mereka yang menjalani kehidupan aktif.', benefits: ['Halia berganda untuk kesan lebih', 'Sesuai untuk kehidupan aktif', 'Tidak berminyak, mudah diserap'], usage_info: 'Sapu pada sendi dan otot. Untuk luaran sahaja.' },
+  '7': { id: '7', name: 'Lotion Mustajab Pati Halia 65ml', tagline: 'Saiz mini • Travel size', price: 'RM 14.90', badge: 'Jimat', heat: 'Mild', size: '65ml', description: 'Produk Pati Halia saiz mini 65ml. Limited — bukan semua jenis ada.', benefits: ['Saiz mini 65ml', 'Limited', 'Sesuai travel'], usage_info: 'Sapu pada sendi, otot atau abdomen. Untuk luaran sahaja.' },
+  '8': { id: '8', name: 'Lotion Mustajab Super Hot 65ml', tagline: 'Saiz mini • Capsicum workout', price: 'RM 15.90', heat: 'Hot', size: '65ml', description: 'Versi Super Hot saiz mini 65ml. Limited.', benefits: ['Saiz mini 65ml', 'Limited', 'Capsicum untuk haba kuat'], usage_info: 'Sapu sebelum atau selepas senaman. Untuk luaran sahaja.' },
+};
 
-export function generateStaticParams() {
-  return products.map((p) => ({ id: p.id }));
-}
+type Props = { params: Promise<{ id: string }> };
 
-export function generateMetadata({ params }: { params: { id: string } }) {
-  const product = getProduct(params.id);
+export async function generateMetadata({ params }: Props) {
+  const { id } = await params;
+  let product = await getProduct(id);
+  if (!product) product = productsFallback[id];
   if (!product) return { title: 'Produk tidak dijumpai' };
   return {
     title: `${product.name} — Dunia Herbs`,
-    description: product.description,
+    description: product.description || product.tagline,
   };
 }
 
-export default function ProductPage({ params }: { params: { id: string } }) {
-  const product = getProduct(params.id);
+export default async function ProductPage({ params }: Props) {
+  const { id } = await params;
+  const [productResult, content] = await Promise.all([getProduct(id), getSiteContent()]);
+  let product = productResult;
+  if (!product) product = productsFallback[id];
   if (!product) notFound();
 
-  const waLink = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent(`Saya berminat dengan ${product.name}`)}`;
-  const related = products.filter((p) => p.id !== product.id).slice(0, 4);
+  const CONTACT_EMAIL = 'admin@duniaherbs.com.my';
+  const emailLink = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`Pertanyaan: ${product.name}`)}`;
+
+  let allProducts = await getProducts();
+  if (allProducts.length === 0) allProducts = Object.values(productsFallback);
+  const related = allProducts.filter((p) => p.id !== product!.id).slice(0, 4);
+
+  const benefits: string[] = product.benefits && Array.isArray(product.benefits) ? product.benefits : [];
+  const usage = product.usage_info || '';
+  const imageUrl = product.image_url || PRODUCT_IMAGE_FALLBACK;
 
   return (
     <div className="min-h-screen px-6 py-12 max-w-6xl mx-auto">
@@ -58,7 +72,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         {/* Image */}
         <div className="relative aspect-square rounded-3xl overflow-hidden border border-herb-gold/20 bg-herb-surface/60 backdrop-blur-md">
           <Image
-            src={productImages[product.id] || productImages['1']}
+            src={imageUrl}
             alt={product.name}
             fill
             className="object-cover"
@@ -91,7 +105,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <div className="mt-8">
             <h3 className="text-sm font-medium text-herb-gold/80 tracking-widest uppercase mb-3">Kebaikan</h3>
             <ul className="space-y-2">
-              {product.benefits.map((b, i) => (
+              {benefits.map((b, i) => (
                 <li key={i} className="flex items-start gap-2 text-stone-300 text-sm">
                   <span className="text-herb-gold mt-0.5">✦</span>
                   {b}
@@ -103,21 +117,20 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           {/* Usage */}
           <div className="mt-8 rounded-2xl border border-stone-700/50 bg-herb-surface/60 p-5 backdrop-blur-md">
             <h3 className="text-sm font-medium text-stone-200 mb-2">Cara guna</h3>
-            <p className="text-stone-500 text-sm">{product.usage}</p>
+            <p className="text-stone-500 text-sm">{usage}</p>
           </div>
 
           {/* CTA */}
           <div className="mt-8 flex flex-wrap gap-4">
+            <AddToCartButton productId={product.id} productName={product.name} price={product.price} image={imageUrl} />
             <a
-              href={waLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-6 py-3 text-sm font-medium text-white transition hover:bg-green-700"
+              href={emailLink}
+              className="inline-flex items-center gap-2 rounded-xl border border-herb-gold/50 px-6 py-3 text-sm font-medium text-herb-gold transition hover:bg-herb-gold/10 hover:border-herb-gold"
             >
-              <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              Beli via WhatsApp
+              Email Kami
             </a>
           </div>
 
@@ -138,7 +151,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             <Link key={p.id} href={`/produk/${p.id}`} className="group rounded-2xl border border-stone-700/50 bg-herb-surface/60 overflow-hidden backdrop-blur-md transition hover:border-herb-gold/30">
               <div className="relative aspect-square bg-herb-card overflow-hidden">
                 <Image
-                  src={productImages[p.id] || productImages['1']}
+                  src={p.image_url || PRODUCT_IMAGE_FALLBACK}
                   alt={p.name}
                   fill
                   className="object-cover transition group-hover:scale-105"

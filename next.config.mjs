@@ -7,6 +7,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'placehold.co', pathname: '/**' },
       { protocol: 'https', hostname: 'upload.wikimedia.org', pathname: '/**' },
       { protocol: 'https', hostname: 'llcseahgpcjlfmfrnxef.supabase.co', pathname: '/**' },
+      { protocol: 'https', hostname: 'cdswdwhdupcsblmqutuv.supabase.co', pathname: '/**' },
     ],
   },
 };

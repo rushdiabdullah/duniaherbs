@@ -42,8 +42,8 @@ function CounterItem({ value, suffix = '', label, duration = 2 }: CounterItemPro
     <div ref={ref} className="text-center">
       <motion.p
         className="font-serif text-4xl md:text-5xl font-bold text-herb-gold"
-        initial={reduceMotion ? false : { scale: 0.5, opacity: 0 }}
-        whileInView={reduceMotion ? false : { scale: 1, opacity: 1 }}
+        initial={reduceMotion ? undefined : { scale: 0.5, opacity: 0 }}
+        whileInView={reduceMotion ? undefined : { scale: 1, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
       >
@@ -58,7 +58,7 @@ function CounterItem({ value, suffix = '', label, duration = 2 }: CounterItemPro
 const defaultStats = [
   { value: 20, suffix: '+', label: 'Tahun di Pasaran' },
   { value: 40, suffix: '+', label: 'Stockist Seluruh Dunia' },
-  { value: 100, suffix: 'K+', label: 'Pelanggan Setia' },
+  { value: 80, suffix: 'K+', label: 'Pelanggan Setia' },
   { value: 8, suffix: '', label: 'Variasi Produk' },
 ];
 

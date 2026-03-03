@@ -4,11 +4,10 @@ import { usePathname } from 'next/navigation';
 import ChatBot from './ChatBot';
 
 /**
- * Tunjukkan ChatBot di semua halaman KECUALI /fasha.
- * Landing page Fasha — experience glamour tanpa gangguan.
+ * Tunjukkan ChatBot di semua halaman KECUALI admin.
  */
 export default function ConditionalChatBot() {
   const pathname = usePathname();
-  if (pathname?.startsWith('/fasha')) return null;
+  if (pathname?.startsWith('/admin')) return null;
   return <ChatBot />;
 }

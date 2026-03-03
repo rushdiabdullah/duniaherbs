@@ -1,8 +1,19 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
+import dynamic from 'next/dynamic';
 import { Playfair_Display, Outfit } from 'next/font/google';
 import './globals.css';
-import ConditionalChatBot from '@/components/ConditionalChatBot';
+import { CartProvider } from '@/lib/cart';
+
+const ConditionalChatBot = dynamic(
+  () => import('@/components/ConditionalChatBot'),
+  { ssr: false }
+);
+
+const CartDrawer = dynamic(
+  () => import('@/components/CartDrawer'),
+  { ssr: false }
+);
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -55,8 +66,11 @@ export default function RootLayout({
   return (
     <html lang="ms" className="dark">
       <body className={`${playfair.variable} ${outfit.variable} font-sans min-h-screen bg-herb-dark`}>
-        {children}
-        <ConditionalChatBot />
+        <CartProvider>
+          {children}
+          <CartDrawer />
+          <ConditionalChatBot />
+        </CartProvider>
       </body>
     </html>
   );

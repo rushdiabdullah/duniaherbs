@@ -24,7 +24,9 @@ type Stockist = {
   created_at?: string;
 };
 
-const emptyForm = {
+type Region = (typeof REGIONS)[number];
+
+const emptyForm: { name: string; area: string; type: string; region: Region; url: string; visible: boolean; sort_order: number } = {
   name: '',
   area: '',
   type: '',
@@ -73,7 +75,7 @@ export default function AdminStockistPage() {
       name: row.name ?? '',
       area: row.area ?? '',
       type: row.type ?? '',
-      region: (REGIONS.includes(row.region as (typeof REGIONS)[number]) ? row.region : REGIONS[0]) as (typeof REGIONS)[number],
+      region: (REGIONS.includes(row.region as Region) ? row.region : REGIONS[0]) as Region,
       url: row.url ?? '',
       visible: row.visible ?? true,
       sort_order: row.sort_order ?? 0,
@@ -107,14 +109,23 @@ export default function AdminStockistPage() {
 
   return (
     <AdminShell>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="font-serif text-2xl font-bold text-stone-100">Stockist</h1>
+      <div className="flex items-center justify-between mb-2">
+        <div>
+          <h1 className="font-serif text-2xl font-bold text-stone-100">Stockist</h1>
+          <p className="text-stone-500 text-xs mt-1">Senarai stockist & pengedar di halaman /stockist. Dikelompok ikut region — ada URL untuk beli online.</p>
+        </div>
+        <div className="flex items-center gap-2">
+        <a href="/stockist" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 rounded-xl border border-stone-700 px-3 py-2 text-xs text-stone-400 hover:text-herb-gold hover:border-herb-gold/50 transition">
+          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+          Preview
+        </a>
         <button
           onClick={openAdd}
           className="rounded-xl border border-stone-700 bg-herb-surface px-4 py-2 text-sm text-herb-gold hover:border-herb-gold/50 transition"
         >
           + Tambah
         </button>
+        </div>
       </div>
 
       {loading ? (

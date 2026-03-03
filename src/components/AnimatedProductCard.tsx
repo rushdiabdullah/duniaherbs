@@ -35,8 +35,8 @@ export function AnimatedProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/produk/${product.id}`}>
     <motion.article
-      initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-      whileInView={reduceMotion ? false : { opacity: 1, y: 0 }}
+      initial={reduceMotion ? undefined : { opacity: 0, y: 20 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-20px' }}
       whileHover={reduceMotion ? undefined : { y: -6, transition: { duration: 0.2 } }}
       transition={{ duration: reduceMotion ? 0 : 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}

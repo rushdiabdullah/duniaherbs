@@ -15,8 +15,8 @@ const config: Config = {
       },
       colors: {
         herb: {
-          dark: '#060810',
-          surface: '#0c1020',
+          dark: '#0a0812',
+          surface: '#0e1220',
           card: '#121830',
           sage: '#9cb59d',
           sageDark: '#5c7c5d',

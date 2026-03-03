@@ -1,8 +1,8 @@
 'use client';
 
+import { useCallback, useRef, useEffect, useState } from 'react';
 import AdminShell from '@/components/admin/AdminShell';
 import { getSupabaseBrowser } from '@/lib/supabase-browser';
-import { useEffect, useState } from 'react';
 
 type MediaFile = {
   name: string;
@@ -14,24 +14,28 @@ export default function AdminMediaPage() {
   const [files, setFiles] = useState<MediaFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState('');
   const [copied, setCopied] = useState<string | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   async function fetchFiles() {
     const supabase = getSupabaseBrowser();
-    const { data, error } = await supabase.storage.from('media').list('', { limit: 500 });
-    if (error) {
-      console.error(error);
-      setFiles([]);
-    } else {
-      const items: MediaFile[] = (data ?? [])
-        .filter((f) => f.name && !f.name.startsWith('.'))
-        .map((f) => {
-          const path = f.name;
+    const folders = ['', 'images', 'videos', 'products'];
+    const allItems: MediaFile[] = [];
+
+    for (const folder of folders) {
+      const { data } = await supabase.storage.from('media').list(folder, { limit: 500 });
+      if (data) {
+        for (const f of data) {
+          if (!f.name || f.name.startsWith('.') || f.id === null) continue;
+          const path = folder ? `${folder}/${f.name}` : f.name;
           const { data: urlData } = supabase.storage.from('media').getPublicUrl(path);
-          return { name: f.name, path, publicUrl: urlData.publicUrl };
-        });
-      setFiles(items);
+          allItems.push({ name: f.name, path, publicUrl: urlData.publicUrl });
+        }
+      }
     }
+    setFiles(allItems);
     setLoading(false);
   }
 
@@ -39,26 +43,31 @@ export default function AdminMediaPage() {
     fetchFiles();
   }, []);
 
-  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const input = e.target;
-    const selected = input.files;
-    if (!selected?.length) return;
+  const uploadFiles = useCallback(async (fileList: FileList | File[]) => {
+    if (!fileList.length) return;
     setUploading(true);
     const supabase = getSupabaseBrowser();
-    for (let i = 0; i < selected.length; i++) {
-      const file = selected[i];
+
+    for (let i = 0; i < fileList.length; i++) {
+      const file = fileList[i];
+      setUploadProgress(`${i + 1}/${fileList.length} — ${file.name}`);
       const ext = file.name.split('.').pop() ?? 'bin';
-      const safeName = `${Date.now()}-${i}.${ext}`;
+      const isVid = /^video\//i.test(file.type);
+      const folder = isVid ? 'videos' : 'images';
+      const safeName = `${folder}/${Date.now()}-${i}.${ext}`;
+
       const { error } = await supabase.storage.from('media').upload(safeName, file, {
-        cacheControl: '3600',
+        cacheControl: '31536000',
         upsert: false,
       });
-      if (error) console.error(error);
+      if (error) alert(`Gagal upload ${file.name}: ${error.message}`);
     }
+
     setUploading(false);
-    input.value = '';
+    setUploadProgress('');
+    if (inputRef.current) inputRef.current.value = '';
     fetchFiles();
-  }
+  }, []);
 
   async function handleDelete(path: string) {
     if (!confirm('Padam fail ini?')) return;
@@ -74,27 +83,65 @@ export default function AdminMediaPage() {
     setTimeout(() => setCopied(null), 1500);
   }
 
-  const isImage = (name: string) =>
-    /\.(jpg|jpeg|png|gif|webp|avif|svg)$/i.test(name);
-  const isVideo = (name: string) =>
-    /\.(mp4|webm|mov|avi|mkv)$/i.test(name);
+  const isImage = (name: string) => /\.(jpg|jpeg|png|gif|webp|avif|svg)$/i.test(name);
+  const isVideo = (name: string) => /\.(mp4|webm|mov|avi|mkv)$/i.test(name);
 
   return (
     <AdminShell>
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6">
         <h1 className="font-serif text-2xl font-bold text-stone-100">Media</h1>
-        <label className="rounded-xl border border-stone-700 bg-herb-surface px-4 py-2 text-sm text-herb-gold hover:border-herb-gold/50 transition cursor-pointer">
-          <input
-            type="file"
-            accept="image/*,video/*"
-            multiple
-            onChange={handleUpload}
-            disabled={uploading}
-            className="hidden"
-          />
-          {uploading ? 'Memuat naik...' : '+ Muat Naik Gambar/Video'}
-        </label>
+        <p className="text-stone-500 text-xs mt-1">Semua gambar dan video yang diupload disimpan di sini. Copy URL dan paste di halaman Produk, Content, atau Video.</p>
       </div>
+
+      {/* Drag & Drop zone */}
+      <div
+        onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+        onDragLeave={(e) => { e.preventDefault(); setDragging(false); }}
+        onDrop={(e) => { e.preventDefault(); setDragging(false); uploadFiles(e.dataTransfer.files); }}
+        onClick={() => !uploading && inputRef.current?.click()}
+        className={`relative mb-6 cursor-pointer rounded-xl border-2 border-dashed transition-all ${
+          dragging
+            ? 'border-herb-gold bg-herb-gold/10'
+            : 'border-stone-700 hover:border-stone-500 bg-herb-surface/30'
+        } ${uploading ? 'pointer-events-none opacity-60' : ''}`}
+      >
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*,video/*"
+          multiple
+          onChange={(e) => e.target.files && uploadFiles(e.target.files)}
+          className="hidden"
+          disabled={uploading}
+        />
+        <div className="flex flex-col items-center justify-center py-10 px-4">
+          <svg
+            className={`h-12 w-12 mb-3 ${dragging ? 'text-herb-gold' : 'text-stone-600'}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+            />
+          </svg>
+          <p className="text-stone-400 text-sm font-medium">
+            {uploading ? uploadProgress : 'Drag & drop gambar atau video di sini'}
+          </p>
+          <p className="text-stone-600 text-xs mt-1">
+            Atau klik untuk pilih fail dari komputer
+          </p>
+        </div>
+      </div>
+
+      {uploading && (
+        <div className="h-1.5 w-full rounded-full bg-stone-800 overflow-hidden mb-6">
+          <div className="h-full bg-herb-gold rounded-full animate-pulse" style={{ width: '60%' }} />
+        </div>
+      )}
 
       {loading ? (
         <p className="text-stone-500 text-sm">Memuatkan...</p>
@@ -107,36 +154,32 @@ export default function AdminMediaPage() {
             >
               <div className="aspect-square bg-stone-800/50 flex items-center justify-center relative">
                 {isImage(f.name) ? (
-                  <img
-                    src={f.publicUrl}
-                    alt={f.name}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={f.publicUrl} alt={f.name} className="w-full h-full object-cover" />
                 ) : isVideo(f.name) ? (
                   <video
                     src={f.publicUrl}
-                    className="max-w-full max-h-full object-contain"
+                    className="w-full h-full object-cover"
                     muted
                     playsInline
                     preload="metadata"
                   />
                 ) : (
-                  <span className="text-stone-500 text-xs">Preview</span>
+                  <span className="text-stone-500 text-xs">{f.name.split('.').pop()?.toUpperCase()}</span>
                 )}
               </div>
               <div className="p-3">
-                <p className="text-stone-400 text-xs truncate mb-2" title={f.name}>
-                  {f.name}
+                <p className="text-stone-400 text-xs truncate mb-2" title={f.path}>
+                  {f.path}
                 </p>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => copyUrl(f.publicUrl)}
+                    onClick={(e) => { e.stopPropagation(); copyUrl(f.publicUrl); }}
                     className="flex-1 rounded-lg border border-stone-700 px-2 py-1 text-xs text-herb-gold hover:border-herb-gold/50"
                   >
                     {copied === f.publicUrl ? 'Disalin!' : 'Copy URL'}
                   </button>
                   <button
-                    onClick={() => handleDelete(f.path)}
+                    onClick={(e) => { e.stopPropagation(); handleDelete(f.path); }}
                     className="rounded-lg border border-stone-700 px-2 py-1 text-xs text-red-400 hover:border-red-500/50"
                   >
                     Padam
@@ -149,7 +192,7 @@ export default function AdminMediaPage() {
       )}
 
       {!loading && files.length === 0 && (
-        <p className="text-stone-500 text-sm py-8 text-center">Tiada media. Muat naik fail untuk bermula.</p>
+        <p className="text-stone-500 text-sm py-8 text-center">Tiada media. Drag & drop fail untuk bermula.</p>
       )}
     </AdminShell>
   );

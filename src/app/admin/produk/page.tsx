@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import AdminShell from '@/components/admin/AdminShell';
 import AdminTable from '@/components/admin/AdminTable';
+import FileUpload from '@/components/admin/FileUpload';
 import { getSupabaseBrowser } from '@/lib/supabase-browser';
 
 type Product = {
@@ -17,11 +18,19 @@ type Product = {
   benefits: string[];
   usage_info: string;
   image_url: string;
+  packaging_color?: string;
   sort_order: number;
   visible: boolean;
 };
 
-const HEAT_OPTIONS = ['Mild', 'Hot', 'Extreme'];
+const HEAT_OPTIONS = [
+  { value: 'Mild', label: 'Mild (Tahap 1)' },
+  { value: 'Hot', label: 'Hot (Tahap 2)' },
+  { value: 'Extra Hot', label: 'Extra Hot (Tahap 3)' },
+  { value: 'Super Hot', label: 'Super Hot (Tahap 4)' },
+  { value: 'Extreme', label: 'Extreme Hot (Tahap 5)' },
+  { value: 'Mix', label: 'Mix (Set campur tahap kepanasan)' },
+];
 
 const emptyProduct: Omit<Product, 'id'> = {
   name: '',
@@ -34,6 +43,7 @@ const emptyProduct: Omit<Product, 'id'> = {
   benefits: [],
   usage_info: '',
   image_url: '',
+  packaging_color: '',
   sort_order: 0,
   visible: true,
 };
@@ -86,6 +96,7 @@ export default function AdminProdukPage() {
       benefits: row.benefits ?? [],
       usage_info: row.usage_info ?? '',
       image_url: row.image_url ?? '',
+      packaging_color: row.packaging_color ?? '',
       sort_order: row.sort_order ?? 0,
       visible: row.visible ?? true,
     });
@@ -116,6 +127,7 @@ export default function AdminProdukPage() {
       benefits: form.benefits,
       usage_info: form.usage_info,
       image_url: form.image_url || null,
+      packaging_color: form.packaging_color || null,
       sort_order: form.sort_order,
       visible: form.visible,
     };
@@ -161,14 +173,36 @@ export default function AdminProdukPage() {
 
   return (
     <AdminShell>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="font-serif text-2xl font-bold text-stone-100">Produk</h1>
-        <button
-          onClick={openAdd}
-          className="rounded-xl bg-herb-gold px-4 py-2.5 text-sm font-semibold text-herb-dark transition hover:bg-herb-goldLight"
-        >
-          Tambah
-        </button>
+      <div className="flex items-center justify-between mb-2">
+        <div>
+          <h1 className="font-serif text-2xl font-bold text-stone-100">Produk</h1>
+          <p className="text-stone-500 text-xs mt-1">Senarai produk lotion yang dipaparkan di homepage (seksyen "Produk Mustajab") dan halaman /produk/[id]</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <a
+            href="/#produk"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 rounded-xl border border-stone-700 px-3 py-2 text-xs text-stone-400 hover:text-herb-gold hover:border-herb-gold/50 transition"
+          >
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            Preview
+          </a>
+          <button
+            onClick={openAdd}
+            className="rounded-xl bg-herb-gold px-4 py-2.5 text-sm font-semibold text-herb-dark transition hover:bg-herb-goldLight"
+          >
+            Tambah
+          </button>
+        </div>
+      </div>
+      <div className="mb-6 rounded-lg border border-stone-800 bg-stone-900/50 px-4 py-3">
+        <p className="text-stone-500 text-xs leading-relaxed">
+          <span className="text-stone-400 font-medium">Guide:</span> Setiap produk ada gambar, nama, harga, heat level (Tahap 1-5), dan badge (Bestseller/Popular/Terbaru/Jimat). Upload gambar terus dari komputer — drag &amp; drop atau klik. Sort order menentukan susunan paparan.
+        </p>
       </div>
 
       {loading ? (
@@ -176,6 +210,16 @@ export default function AdminProdukPage() {
       ) : (
         <AdminTable<Product>
           columns={[
+            {
+              key: 'image_url',
+              label: '',
+              render: (row) =>
+                row.image_url ? (
+                  <img src={row.image_url} alt="" className="h-10 w-10 rounded-lg object-cover" />
+                ) : (
+                  <div className="h-10 w-10 rounded-lg bg-stone-800 flex items-center justify-center text-stone-600 text-xs">—</div>
+                ),
+            },
             { key: 'name', label: 'Nama' },
             { key: 'price', label: 'Harga' },
             { key: 'badge', label: 'Badge' },
@@ -261,15 +305,15 @@ export default function AdminProdukPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className={labelClass}>Heat</label>
+                  <label className={labelClass}>Heat Level</label>
                   <select
                     value={form.heat}
                     onChange={(e) => setForm((f) => ({ ...f, heat: e.target.value }))}
                     className={inputClass}
                   >
                     {HEAT_OPTIONS.map((h) => (
-                      <option key={h} value={h}>
-                        {h}
+                      <option key={h.value} value={h.value}>
+                        {h.label}
                       </option>
                     ))}
                   </select>
@@ -314,14 +358,44 @@ export default function AdminProdukPage() {
                 />
               </div>
               <div>
-                <label className={labelClass}>Image URL</label>
+                <label className={labelClass}>Warna Tiub/Botol (untuk AI chatbot)</label>
                 <input
-                  type="url"
-                  value={form.image_url}
-                  onChange={(e) => setForm((f) => ({ ...f, image_url: e.target.value }))}
+                  type="text"
+                  value={form.packaging_color}
+                  onChange={(e) => setForm((f) => ({ ...f, packaging_color: e.target.value }))}
                   className={inputClass}
-                  placeholder="https://..."
+                  placeholder="Cth: Botol putih, label hijau & kuning. Tiub putih."
                 />
+                <p className="text-stone-600 text-xs mt-1">Emma akan guna maklumat ini bila pelanggan tanya warna packaging.</p>
+              </div>
+              <div>
+                <label className={labelClass}>Gambar Produk</label>
+                <FileUpload
+                  accept="image/*"
+                  folder="products"
+                  preview={form.image_url || undefined}
+                  previewType="image"
+                  label="Upload gambar produk"
+                  onUpload={(url) => setForm((f) => ({ ...f, image_url: url }))}
+                />
+                {form.image_url && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={form.image_url}
+                      onChange={(e) => setForm((f) => ({ ...f, image_url: e.target.value }))}
+                      className={`${inputClass} text-xs`}
+                      placeholder="Atau masukkan URL manual..."
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setForm((f) => ({ ...f, image_url: '' }))}
+                      className="text-red-400 hover:text-red-300 text-xs whitespace-nowrap"
+                    >
+                      Padam
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>

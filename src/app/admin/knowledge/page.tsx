@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import AdminShell from '@/components/admin/AdminShell';
 import { getSupabaseBrowser } from '@/lib/supabase-browser';
 import { useEffect, useState } from 'react';
@@ -22,7 +23,7 @@ const emptyForm = {
   sort_order: 0,
 };
 
-const categories = ['Produk', 'Harga', 'Cara Guna', 'Keselamatan', 'Penghantaran', 'Stockist', 'Syarikat', 'FAQ', 'Complaint', 'Sales', 'Promosi', 'Umum'];
+const categories = ['Produk', 'Harga', 'Cara Guna', 'Keselamatan', 'Penghantaran', 'Stockist', 'Syarikat', 'FAQ', 'Complaint', 'Promosi', 'Umum'];
 
 export default function AdminKnowledgePage() {
   const [items, setItems] = useState<KBItem[]>([]);
@@ -38,6 +39,7 @@ export default function AdminKnowledgePage() {
     const { data, error } = await supabase
       .from('knowledge_base')
       .select('*')
+      .neq('category', 'Sales')
       .order('sort_order', { ascending: true });
     if (error) {
       console.error(error);
@@ -97,21 +99,27 @@ export default function AdminKnowledgePage() {
   }
 
   const filtered = filterCat === 'Semua' ? items : items.filter((i) => i.category === filterCat);
-  const usedCategories = ['Semua', ...new Set(items.map((i) => i.category))];
+  const usedCategories = ['Semua', ...Array.from(new Set(items.map((i) => i.category)))];
 
   return (
     <AdminShell>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-2">
         <div>
-          <h1 className="font-serif text-2xl font-bold text-stone-100">Knowledge Base AI</h1>
-          <p className="text-stone-500 text-sm mt-1">Info yang Emma rujuk untuk jawab soalan pelanggan</p>
+          <h1 className="font-serif text-2xl font-bold text-stone-100">Info AM</h1>
+          <p className="text-stone-500 text-xs mt-1">Info yang AI rujuk & dipaparkan di /info. Sales diurus di halaman Sales.</p>
         </div>
-        <button
-          onClick={openAdd}
-          className="rounded-xl border border-stone-700 bg-herb-surface px-4 py-2 text-sm text-herb-gold hover:border-herb-gold/50 transition"
-        >
-          + Tambah Info
-        </button>
+        <div className="flex items-center gap-2">
+          <Link href="/info" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 rounded-xl border border-stone-700 px-3 py-2 text-xs text-stone-400 hover:text-herb-gold hover:border-herb-gold/50 transition">
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+            Lihat Info AM
+          </Link>
+          <button
+            onClick={openAdd}
+            className="rounded-xl border border-stone-700 bg-herb-surface px-4 py-2 text-sm text-herb-gold hover:border-herb-gold/50 transition"
+          >
+            + Tambah Info
+          </button>
+        </div>
       </div>
 
       {/* Filter */}

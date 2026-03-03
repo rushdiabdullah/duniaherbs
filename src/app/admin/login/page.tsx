@@ -15,20 +15,25 @@ export default function AdminLogin() {
     e.preventDefault();
     setError('');
     setLoading(true);
-    const supabase = getSupabaseBrowser();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (error) {
-      setError('Email atau kata laluan salah.');
-      return;
+    try {
+      const supabase = getSupabaseBrowser();
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        setError('Email atau kata laluan salah.');
+        return;
+      }
+      router.push('/admin');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Ralat sambungan. Sila semak .env.local');
+    } finally {
+      setLoading(false);
     }
-    router.push('/admin');
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6">
+    <div className="min-h-screen flex items-center justify-center px-6 bg-[#0a0812]">
       <div className="w-full max-w-sm">
-        <h1 className="font-serif text-2xl font-bold text-herb-gold text-center mb-2">Dunia Herbs</h1>
+        <h1 className="font-serif text-2xl font-bold text-[#d4a853] text-center mb-2">Dunia Herbs</h1>
         <p className="text-stone-500 text-center text-sm mb-8">Admin Dashboard</p>
         <form onSubmit={handleLogin} className="space-y-4">
           <div>

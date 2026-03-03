@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { getSupabaseBrowser } from '@/lib/supabase-browser';
 
 type Testimonial = {
   quote: string;
@@ -9,30 +10,30 @@ type Testimonial = {
   role: string;
 };
 
-const allTestimonials: Testimonial[] = [
-  { quote: 'Produk ni memang berkesan. Saya guna untuk sakit lutut, lega dalam masa singkat.', author: 'Siti A.', role: 'Pelanggan sejak 2019' },
+const fallbackTestimonials: Testimonial[] = [
+  { quote: 'Produk ni memang berkesan. Saya guna untuk ketidakselesaan lutut, lega dalam masa singkat.', author: 'Siti A.', role: 'Pelanggan sejak 2019' },
   { quote: 'Lotion Mustajab pilihan keluarga kami. Halal, selamat dan berkesan.', author: 'Ahmad R.', role: 'Bapa 3 anak' },
-  { quote: 'Lepas bersalin saya guna Pati Halia. Memang mustajab untuk urutan badan.', author: 'Nurul H.', role: 'Ibu baru' },
-  { quote: 'Saya pakai Super Hot sebelum gym. Badan cepat panas, peluh lebih banyak.', author: 'Faizal M.', role: 'Gym enthusiast' },
-  { quote: 'Dah 5 tahun guna. Satu keluarga pakai produk ni — dari nenek sampai cucu.', author: 'Aminah Y.', role: 'Pelanggan setia' },
-  { quote: 'Sakit pinggang saya kurang selepas seminggu guna. Recommended sangat!', author: 'Rahman K.', role: 'Pemandu lori' },
-  { quote: 'Produk halal dan selamat. Saya percaya Dunia Herbs sejak dulu lagi.', author: 'Zainab S.', role: 'Surirumah' },
-  { quote: 'Extreme Hot memang gila panas! Sesuai lepas main futsal. Otot tak cramp.', author: 'Izzat D.', role: 'Pemain futsal' },
-  { quote: 'Mak saya yang recommend. Sekarang saya pun dah jadi pelanggan tetap!', author: 'Haslinda W.', role: 'Pelanggan sejak 2021' },
-  { quote: 'Bau wangi halia, tak melekit. Memang selesa pakai setiap hari.', author: 'Kamal J.', role: 'Pekerja pejabat' },
-  { quote: 'Saya beli untuk ibu. Dia kata sakit sendi dah kurang banyak. Terbaik!', author: 'Liyana T.', role: 'Anak yang prihatin' },
-  { quote: 'Guna masa mengandung pun selamat. Doktor kata OK sebab luaran sahaja.', author: 'Farihah N.', role: 'Ibu mengandung' },
-  { quote: 'Kawan office semua dah mula pakai. Viral sebab memang berkesan.', author: 'Daniel L.', role: 'Eksekutif IT' },
-  { quote: 'Saya runner. Lepas lari 10km, sapu lotion ni terus rasa lega otot kaki.', author: 'Syafiq B.', role: 'Pelari marathon' },
-  { quote: 'Dulu selalu pergi urut. Sekarang jimat, pakai Dunia Herbs je dah cukup.', author: 'Rokiah M.', role: 'Pesara kerajaan' },
-  { quote: 'Packaging cantik, kualiti terjamin. Sesuai buat hadiah untuk orang tersayang.', author: 'Aiman Z.', role: 'Pembeli pertama' },
 ];
 
 export function TestimonialSlider() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(fallbackTestimonials);
   const [current, setCurrent] = useState(0);
   const reduceMotion = useReducedMotion();
-  const intervalRef = useRef<ReturnType<typeof setInterval>>(null);
-  const total = allTestimonials.length;
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowser();
+    supabase
+      .from('testimonials')
+      .select('quote, author, role')
+      .eq('visible', true)
+      .order('sort_order')
+      .then(({ data }) => {
+        if (data && data.length > 0) setTestimonials(data);
+      });
+  }, []);
+
+  const total = testimonials.length;
   const perPage = 2;
   const pages = Math.ceil(total / perPage);
 
@@ -57,7 +58,7 @@ export function TestimonialSlider() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduceMotion, pages]);
 
-  const visible = allTestimonials.slice(current * perPage, current * perPage + perPage);
+  const visible = testimonials.slice(current * perPage, current * perPage + perPage);
 
   return (
     <div
@@ -68,7 +69,7 @@ export function TestimonialSlider() {
         {visible.map((t, i) => (
           <motion.div
             key={`${current}-${i}`}
-            initial={reduceMotion ? false : { opacity: 0, x: 30 }}
+            initial={reduceMotion ? undefined : { opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -30 }}
             transition={{ duration: 0.4, delay: i * 0.1 }}

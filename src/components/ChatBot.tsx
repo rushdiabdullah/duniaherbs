@@ -3,12 +3,19 @@
 import { useChat } from 'ai/react';
 import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+
+const EMMA_INTRO = `Hai! 👋 Saya **Emma** — pembantu jualan Dunia Herbs.
+
+Saya boleh tolong anda cari produk lotion pati halia yang sesuai — sama ada untuk ibu berpantang, ketidakselesaan sendi, gym, atau kegunaan harian.
+
+Tanya apa sahaja, saya sedia membantu! 💬`;
 
 export default function ChatBot() {
   const [open, setOpen] = useState(false);
   const reduceMotion = useReducedMotion();
   const bottomRef = useRef<HTMLDivElement>(null);
-  const { messages, input, handleInputChange, handleSubmit, append, isLoading } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, append, isLoading, error } = useChat({
     api: '/api/chat',
     id: 'emma-chat',
   });
@@ -33,7 +40,7 @@ export default function ChatBot() {
           right: 'max(1.5rem, env(safe-area-inset-right, 24px))',
         }}
         aria-label={open ? 'Tutup chat' : 'Buka chat'}
-        initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
+        initial={reduceMotion ? undefined : { scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={reduceMotion ? { duration: 0 } : { delay: 0.5, type: 'spring', stiffness: 200 }}
         whileHover={reduceMotion ? undefined : { scale: 1.08 }}
@@ -66,8 +73,19 @@ export default function ChatBot() {
           <div className="flex h-80 flex-col">
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.length === 0 && (
-                <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
-                  <p className="text-stone-500 text-sm">Tanya apa sahaja pasal produk kami</p>
+                <div className="flex justify-start">
+                  <div className="max-w-[85%] rounded-2xl px-4 py-2.5 text-sm bg-herb-card text-stone-200 border border-blue-950/50">
+                    <div className="chat-markdown [&_strong]:font-semibold [&_strong]:text-inherit [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:my-2 [&_li]:my-0.5 [&_p]:my-1 first:[&_p]:mt-0 last:[&_p]:mb-0">
+                      <ReactMarkdown>{EMMA_INTRO}</ReactMarkdown>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {error && (
+                <div className="flex justify-start">
+                  <div className="max-w-[85%] rounded-2xl px-4 py-2.5 text-sm bg-red-950/50 text-red-200 border border-red-900/50">
+                    {error.message}
+                  </div>
                 </div>
               )}
               {messages.map((m) => (
@@ -82,7 +100,13 @@ export default function ChatBot() {
                         : 'bg-herb-card text-stone-200 border border-blue-950/50'
                     }`}
                   >
-                    <div className="whitespace-pre-wrap">{m.content}</div>
+                    {m.role === 'user' ? (
+                      <div className="whitespace-pre-wrap">{m.content}</div>
+                    ) : (
+                      <div className="chat-markdown [&_strong]:font-semibold [&_strong]:text-inherit [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:my-2 [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:my-2 [&_li]:my-0.5 [&_p]:my-1 first:[&_p]:mt-0 last:[&_p]:mb-0">
+                        <ReactMarkdown>{m.content}</ReactMarkdown>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}

@@ -1,6 +1,7 @@
 'use client';
 
 import AdminShell from '@/components/admin/AdminShell';
+import FileUpload from '@/components/admin/FileUpload';
 import { getSupabaseBrowser } from '@/lib/supabase-browser';
 import { useEffect, useState } from 'react';
 
@@ -81,7 +82,7 @@ export default function AdminFashaPage() {
     const picksStr = selectedIds.join(',');
     const toSave = { ...content, fasha_picks: picksStr };
     for (const key of FASHA_KEYS) {
-      const value = key === 'fasha_picks' ? picksStr : (toSave[key] ?? '');
+      const value = key === 'fasha_picks' ? picksStr : ((toSave as Record<string, string>)[key] ?? '');
       const { error } = await supabase.from('site_content').upsert({ id: key, value }, { onConflict: 'id' });
       if (error) console.error(error);
     }
@@ -130,17 +131,22 @@ export default function AdminFashaPage() {
             </div>
             <div>
               <label className="block text-sm text-stone-400 mb-1">{LABELS.fasha_hero_image}</label>
-              <input
-                type="url"
-                value={content.fasha_hero_image ?? ''}
-                onChange={(e) => updateKey('fasha_hero_image', e.target.value)}
-                className="w-full rounded-xl border border-stone-700 bg-herb-surface px-3 py-2 text-stone-100"
-                placeholder="https://..."
+              <FileUpload
+                accept="image/*"
+                folder="images"
+                preview={content.fasha_hero_image || undefined}
+                previewType="image"
+                label="Upload gambar hero Fasha"
+                onUpload={(url) => updateKey('fasha_hero_image', url)}
               />
               {content.fasha_hero_image && (
-                <div className="mt-2 relative w-32 h-40 rounded-lg overflow-hidden border border-stone-700">
-                  <img src={content.fasha_hero_image} alt="Preview" className="object-cover w-full h-full" />
-                </div>
+                <input
+                  type="text"
+                  value={content.fasha_hero_image}
+                  onChange={(e) => updateKey('fasha_hero_image', e.target.value)}
+                  className="mt-2 w-full rounded-xl border border-stone-700 bg-herb-surface px-3 py-2 text-stone-100 text-xs"
+                  placeholder="Atau masukkan URL manual..."
+                />
               )}
             </div>
             <div>

@@ -12,23 +12,25 @@ type Video = {
 };
 
 const fallbackVideos: Video[] = [
-  { id: '1', title: 'Duta 1', label: 'Duta Dunia Herbs', video_url: '/IMG_0587.MP4' },
-  { id: '2', title: 'Duta 2', label: 'Duta Dunia Herbs', video_url: '/IMG_0596.MP4' },
-  { id: '3', title: 'Duta 3', label: 'Duta Dunia Herbs', video_url: '/IMG_0605.MP4' },
-  { id: '4', title: 'Duta 4', label: 'Duta Dunia Herbs', video_url: '/IMG_0611.MP4' },
+  { id: '1', title: 'Iklan 1', label: 'Iklan Dunia Herbs', video_url: '/IMG_0587.MP4' },
+  { id: '2', title: 'Iklan 2', label: 'Iklan Dunia Herbs', video_url: '/IMG_0596.MP4' },
+  { id: '3', title: 'Iklan 3', label: 'Iklan Dunia Herbs', video_url: '/IMG_0605.MP4' },
+  { id: '4', title: 'Iklan 4', label: 'Iklan Dunia Herbs', video_url: '/IMG_0611.MP4' },
+  { id: '5', title: 'Iklan 5', label: 'Iklan Dunia Herbs', video_url: '/IMG_0587.MP4' },
+  { id: '6', title: 'Iklan 6', label: 'Iklan Dunia Herbs', video_url: '/IMG_0596.MP4' },
 ];
 
 function VideoCard({ video, index }: { video: Video; index: number }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [muted, setMuted] = useState(true);
+  const [playing, setPlaying] = useState(false);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const el = containerRef.current;
     const vid = videoRef.current;
     if (!el || !vid) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -37,13 +39,26 @@ function VideoCard({ video, index }: { video: Video; index: number }) {
           vid.pause();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.3 },
     );
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  function toggleMute() {
+  function togglePlay() {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) {
+      v.play().catch(() => {});
+      setPlaying(true);
+    } else {
+      v.pause();
+      setPlaying(false);
+    }
+  }
+
+  function toggleMute(e: React.MouseEvent) {
+    e.stopPropagation();
     const v = videoRef.current;
     if (!v) return;
     v.muted = !v.muted;
@@ -53,43 +68,58 @@ function VideoCard({ video, index }: { video: Video; index: number }) {
   return (
     <motion.div
       ref={containerRef}
-      initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-      whileInView={reduceMotion ? false : { opacity: 1, y: 0 }}
+      initial={reduceMotion ? undefined : { opacity: 0, y: 20 }}
+      whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group relative aspect-[9/16] rounded-2xl overflow-hidden border border-blue-950/40 bg-herb-surface/60"
+      transition={{ duration: 0.5, delay: index * 0.08 }}
+      className="group"
     >
-      <video
-        ref={videoRef}
-        src={video.video_url}
-        className="absolute inset-0 w-full h-full object-cover"
-        playsInline
-        loop
-        muted
-        preload="metadata"
-      />
-
-      {/* Mute/unmute button */}
-      <button
-        onClick={toggleMute}
-        className="absolute top-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/80 backdrop-blur-sm transition hover:bg-black/70 hover:text-white opacity-0 group-hover:opacity-100"
-        aria-label={muted ? 'Unmute' : 'Mute'}
+      <div
+        className="relative aspect-video rounded-xl overflow-hidden border border-stone-700/50 bg-stone-950 cursor-pointer"
+        onClick={togglePlay}
       >
-        {muted ? (
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
-          </svg>
-        ) : (
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-          </svg>
-        )}
-      </button>
+        <video
+          ref={videoRef}
+          src={video.video_url}
+          className="absolute inset-0 w-full h-full object-contain bg-black"
+          playsInline
+          loop
+          muted
+          preload="metadata"
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
+        />
 
-      {/* Label at bottom */}
-      <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-4 pt-10">
-        <p className="text-stone-200 text-sm font-medium">{video.label}</p>
+        {!playing && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 shadow-lg transition group-hover:scale-110">
+              <svg className="h-6 w-6 text-stone-900 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </div>
+        )}
+
+        <button
+          onClick={toggleMute}
+          className="absolute bottom-3 right-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white/80 backdrop-blur-sm transition hover:bg-black/80 hover:text-white opacity-0 group-hover:opacity-100"
+          aria-label={muted ? 'Unmute' : 'Mute'}
+        >
+          {muted ? (
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+            </svg>
+          ) : (
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            </svg>
+          )}
+        </button>
+      </div>
+      <div className="mt-2 px-1">
+        <p className="text-stone-200 text-sm font-medium truncate">{video.title}</p>
+        <p className="text-stone-500 text-xs">{video.label}</p>
       </div>
     </motion.div>
   );
@@ -106,10 +136,11 @@ export function VideoShowcase() {
           .from('videos')
           .select('id, title, label, video_url')
           .eq('visible', true)
+          .eq('type', 'iklan')
           .order('sort_order');
         if (data && data.length > 0) setVideos(data);
       } catch {
-        // fallback to local videos
+        // fallback
       }
     }
     load();
@@ -118,7 +149,7 @@ export function VideoShowcase() {
   if (videos.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
       {videos.map((v, i) => (
         <VideoCard key={v.id} video={v} index={i} />
       ))}
