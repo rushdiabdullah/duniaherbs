@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useCart } from '@/lib/cart';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
@@ -54,9 +55,12 @@ function clearSavedCustomer() {
 }
 
 export default function CartDrawer() {
+  const pathname = usePathname();
   const { items, count, total, updateQty, removeItem, clearCart } = useCart();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'cart' | 'checkout'>('cart');
+
+  if (pathname?.startsWith('/admin')) return null;
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');

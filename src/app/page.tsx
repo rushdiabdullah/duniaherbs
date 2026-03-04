@@ -104,6 +104,23 @@ export default async function HomePage() {
       }))
     : productsFallback;
 
+  const byId = new Map(products.map((p) => [p.id, p]));
+
+  // KOLEKSI HARUMAN (atas) — produk_ids atau semua produk
+  const harumanIds = (content.produk_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const harumanProducts =
+    harumanIds.length > 0
+      ? (harumanIds.map((id) => byId.get(id)).filter(Boolean) as typeof products)
+      : products;
+
+  // KOLEKSI LEGEND (bawah) — produk_legend_ids atau default: Mild/berbadge (max 4)
+  const legendIds = (content.produk_legend_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const mildOrBadge = products.filter((p) => p.heat === 'Mild' || p.badge).slice(0, 4);
+  const legendProducts =
+    legendIds.length > 0
+      ? (legendIds.map((id) => byId.get(id)).filter(Boolean) as typeof products)
+      : mildOrBadge.length > 0 ? mildOrBadge : products.slice(0, 4);
+
   const CONTACT_EMAIL = 'admin@duniaherbs.com.my';
   const EMAIL_LINK = `mailto:${CONTACT_EMAIL}`;
 
@@ -239,15 +256,26 @@ export default async function HomePage() {
 
       <GoldDivider />
 
-      {/* Products */}
+      {/* Products — Koleksi Unggulan (atas) */}
       <section id="produk" className="relative px-6 py-16 max-w-6xl mx-auto">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,rgba(30,60,140,0.06),transparent)]" />
         <AnimateIn>
           <p className="text-herb-gold/80 text-sm tracking-widest uppercase mb-2">{content.produk_label || 'Koleksi Unggulan'}</p>
-          <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-50 mb-2">{content.produk_title || 'Produk Mustajab'}</h2>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-50 mb-2">{content.produk_title || 'KOLEKSI HARUMAN'}</h2>
           <p className="text-stone-400 mb-10">{content.produk_subtitle || 'Lotion pati halia 130ml — luaran sahaja'}</p>
         </AnimateIn>
-        <ProductCarousel products={products} />
+        <ProductCarousel products={harumanProducts} />
+      </section>
+
+      {/* Products — Koleksi Legend (bawah) */}
+      <section id="produk-legend" className="relative px-6 py-16 max-w-6xl mx-auto">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_40%_at_50%_50%,rgba(30,60,140,0.06),transparent)]" />
+        <AnimateIn>
+          <p className="text-herb-gold/80 text-sm tracking-widest uppercase mb-2">{content.produk_legend_label || 'Koleksi'}</p>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-50 mb-2">{content.produk_legend_title || 'KOLEKSI LEGEND'}</h2>
+          <p className="text-stone-400 mb-10">{content.produk_legend_subtitle || 'Produk ikonik yang menjadi pilihan sejak 2005'}</p>
+        </AnimateIn>
+        <ProductCarousel products={legendProducts} />
       </section>
 
       {/* Video Iklan Komersial */}

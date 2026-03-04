@@ -50,6 +50,8 @@ const emptyProduct: Omit<Product, 'id'> = {
 
 export default function AdminProdukPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [harumanIds, setHarumanIds] = useState<string[]>([]);
+  const [legendIds, setLegendIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Product | null>(null);
@@ -59,7 +61,43 @@ export default function AdminProdukPage() {
 
   useEffect(() => {
     fetchProducts();
+    fetchCollectionIds();
   }, []);
+
+  async function fetchCollectionIds() {
+    const supabase = getSupabaseBrowser();
+    const [haruman, legend] = await Promise.all([
+      supabase.from('site_content').select('value').eq('id', 'produk_ids').single(),
+      supabase.from('site_content').select('value').eq('id', 'produk_legend_ids').single(),
+    ]);
+    setHarumanIds((haruman.data?.value || '').split(',').map((s) => s.trim()).filter(Boolean));
+    setLegendIds((legend.data?.value || '').split(',').map((s) => s.trim()).filter(Boolean));
+  }
+
+  async function toggleHaruman(productId: string) {
+    const isIn = harumanIds.length === 0 || harumanIds.includes(productId);
+    let next: string[];
+    if (isIn) {
+      if (harumanIds.length === 0) {
+        next = products.map((p) => p.id).filter((id) => id !== productId);
+      } else {
+        next = harumanIds.filter((id) => id !== productId);
+      }
+    } else {
+      next = [...harumanIds, productId];
+    }
+    setHarumanIds(next);
+    const supabase = getSupabaseBrowser();
+    await supabase.from('site_content').upsert({ id: 'produk_ids', value: next.join(',') }, { onConflict: 'id' });
+  }
+
+  async function toggleLegend(productId: string) {
+    const isIn = legendIds.includes(productId);
+    const next = isIn ? legendIds.filter((id) => id !== productId) : [...legendIds, productId];
+    setLegendIds(next);
+    const supabase = getSupabaseBrowser();
+    await supabase.from('site_content').upsert({ id: 'produk_legend_ids', value: next.join(',') }, { onConflict: 'id' });
+  }
 
   async function fetchProducts() {
     setLoading(true);
@@ -176,7 +214,7 @@ export default function AdminProdukPage() {
       <div className="flex items-center justify-between mb-2">
         <div>
           <h1 className="font-serif text-2xl font-bold text-stone-100">Produk</h1>
-          <p className="text-stone-500 text-xs mt-1">Senarai produk lotion yang dipaparkan di homepage (seksyen "Produk Mustajab") dan halaman /produk/[id]</p>
+          <p className="text-stone-500 text-xs mt-1">Homepage ada dua seksyen: <strong className="text-stone-400">Koleksi Haruman</strong> (atas — semua produk) & <strong className="text-stone-400">Koleksi Legend</strong> (bawah). Toggle "Legend" untuk pilih produk yang dipaparkan di Koleksi Legend.</p>
         </div>
         <div className="flex items-center gap-2">
           <a
@@ -189,7 +227,19 @@ export default function AdminProdukPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             </svg>
-            Preview
+            Haruman
+          </a>
+          <a
+            href="/#produk-legend"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 rounded-xl border border-stone-700 px-3 py-2 text-xs text-stone-400 hover:text-herb-gold hover:border-herb-gold/50 transition"
+          >
+            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            Legend
           </a>
           <button
             onClick={openAdd}
@@ -199,9 +249,12 @@ export default function AdminProdukPage() {
           </button>
         </div>
       </div>
-      <div className="mb-6 rounded-lg border border-stone-800 bg-stone-900/50 px-4 py-3">
+      <div className="mb-6 rounded-lg border border-stone-800 bg-stone-900/50 px-4 py-3 space-y-2">
         <p className="text-stone-500 text-xs leading-relaxed">
-          <span className="text-stone-400 font-medium">Guide:</span> Setiap produk ada gambar, nama, harga, heat level (Tahap 1-5), dan badge (Bestseller/Popular/Terbaru/Jimat). Upload gambar terus dari komputer — drag &amp; drop atau klik. Sort order menentukan susunan paparan.
+          <span className="text-stone-400 font-medium">Guide:</span> Setiap produk ada gambar, nama, harga, heat level (Tahap 1-5), dan badge. Upload gambar terus — drag &amp; drop. Sort order menentukan susunan.
+        </p>
+        <p className="text-stone-500 text-xs leading-relaxed">
+          <span className="text-herb-gold font-medium">Haruman & Legend:</span> Toggle untuk pilih produk dalam setiap koleksi. <strong>Haruman</strong> (atas) — kosong = semua produk. <strong>Legend</strong> (bawah) — kosong = auto (Mild/berbadge).
         </p>
       </div>
 
@@ -239,6 +292,46 @@ export default function AdminProdukPage() {
                   {row.visible ? 'Ya' : 'Tidak'}
                 </span>
               ),
+            },
+            {
+              key: 'haruman',
+              label: 'Haruman',
+              render: (row) => {
+                const inHaruman = harumanIds.length === 0 || harumanIds.includes(row.id);
+                return (
+                  <button
+                    type="button"
+                    onClick={() => toggleHaruman(row.id)}
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
+                      inHaruman
+                        ? 'bg-herb-gold/30 text-herb-gold border border-herb-gold/50'
+                        : 'bg-stone-800 text-stone-500 border border-stone-700 hover:border-stone-600'
+                    }`}
+                  >
+                    {inHaruman ? '✓ Haruman' : 'Haruman'}
+                  </button>
+                );
+              },
+            },
+            {
+              key: 'legend',
+              label: 'Legend',
+              render: (row) => {
+                const inLegend = legendIds.includes(row.id);
+                return (
+                  <button
+                    type="button"
+                    onClick={() => toggleLegend(row.id)}
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium transition ${
+                      inLegend
+                        ? 'bg-herb-gold/30 text-herb-gold border border-herb-gold/50'
+                        : 'bg-stone-800 text-stone-500 border border-stone-700 hover:border-stone-600'
+                    }`}
+                  >
+                    {inLegend ? '✓ Legend' : 'Legend'}
+                  </button>
+                );
+              },
             },
           ]}
           rows={products}

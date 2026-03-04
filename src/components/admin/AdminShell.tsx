@@ -31,6 +31,10 @@ export default function AdminShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const supabase = getSupabaseBrowser();
+      // INITIAL_SESSION kadang lebih cepat (dari cache) — set ready segera
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'INITIAL_SESSION' && session) setReady(true);
+      });
       supabase.auth.getSession().then(({ data }) => {
         if (!data.session) {
           router.replace('/admin/login');
@@ -40,6 +44,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       }).catch(() => {
         router.replace('/admin/login');
       });
+      return () => subscription.unsubscribe();
     } catch {
       router.replace('/admin/login');
     }
@@ -51,14 +56,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
     router.replace('/admin/login');
   }
 
-  if (!ready) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-stone-500 text-sm">Memuatkan...</p>
-      </div>
-    );
-  }
-
+  // Papar sidebar serta-merta — jangan block seluruh skrin. Auth check jalan selari.
   return (
     <div className="min-h-screen flex">
       {/* Sidebar */}
@@ -108,8 +106,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
           Log Keluar
         </button>
       </aside>
-      {/* Main */}
-      <main className="flex-1 p-6 md:p-8 overflow-y-auto">{children}</main>
+      {/* Main — loading hanya di kawasan kandungan, sidebar sentiasa nampak */}
+      <main className="flex-1 p-6 md:p-8 overflow-y-auto">
+        {ready ? children : (
+          <div className="flex items-center justify-center min-h-[200px]">
+            <p className="text-stone-500 text-sm">Memuatkan...</p>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
