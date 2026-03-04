@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getProduct, getProducts, getSiteContent } from '@/lib/data';
+import { getHeatLabel } from '@/lib/heat';
 import AddToCartButton from '@/components/AddToCartButton';
 
 export const dynamic = 'force-dynamic';
@@ -91,7 +92,7 @@ export default async function ProductPage({ params }: Props) {
           <div className="flex items-center gap-3 mb-3">
             {product.heat && (
               <span className={`rounded-full px-3 py-1 text-xs font-medium ${heatColors[product.heat] || ''}`}>
-                {product.heat}
+                {getHeatLabel(product.heat)}
               </span>
             )}
             <span className="text-stone-500 text-sm">{product.size}</span>

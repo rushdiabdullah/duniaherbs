@@ -14,66 +14,14 @@ import { getProducts, getSiteContent, getMilestones, getFaqs } from '@/lib/data'
 export const dynamic = 'force-dynamic';
 
 const productsFallback = [
-  {
-    id: '1',
-    name: 'Lotion Mustajab Pati Halia',
-    tagline: 'Multi-purpose • Sesuai ibu bersalin',
-    price: 'RM 22.90',
-    badge: 'Bestseller',
-    heat: 'Mild',
-  },
-  {
-    id: '2',
-    name: 'Lotion Mustajab Lime & Ginger',
-    tagline: 'Pati halia + limau nipis',
-    price: 'RM 22.90',
-    heat: 'Mild',
-  },
-  {
-    id: '3',
-    name: 'Lotion Mustajab Super Hot',
-    tagline: 'Dengan capsicum • Untuk workout',
-    price: 'RM 24.90',
-    badge: 'Popular',
-    heat: 'Hot',
-  },
-  {
-    id: '4',
-    name: 'Lotion Mustajab Extra Hot',
-    tagline: 'Shaping • Extra halia',
-    price: 'RM 23.90',
-    heat: 'Hot',
-  },
-  {
-    id: '5',
-    name: 'Lotion Mustajab Extreme Hot',
-    tagline: 'Kepanasan maksimum • Untuk sukan lasak',
-    price: 'RM 25.90',
-    badge: 'Terbaru',
-    heat: 'Extreme',
-  },
-  {
-    id: '6',
-    name: 'Lotion Mustajab Extra Ginger',
-    tagline: 'Halia berganda • Kehidupan aktif',
-    price: 'RM 23.90',
-    heat: 'Hot',
-  },
-  {
-    id: '7',
-    name: 'Lotion Mustajab Pati Halia 65ml',
-    tagline: 'Saiz mini • Travel size',
-    price: 'RM 14.90',
-    badge: 'Jimat',
-    heat: 'Mild',
-  },
-  {
-    id: '8',
-    name: 'Lotion Mustajab Super Hot 65ml',
-    tagline: 'Saiz mini • Capsicum workout',
-    price: 'RM 15.90',
-    heat: 'Hot',
-  },
+  { id: '1', name: 'Lotion Mustajab Pati Halia', tagline: 'Multi-purpose • Sesuai ibu bersalin', price: 'RM 22.90', badge: 'Bestseller', heat: 'Mild', image_url: undefined as string | undefined, sort_order: 0 },
+  { id: '2', name: 'Lotion Mustajab Lime & Ginger', tagline: 'Pati halia + limau nipis', price: 'RM 22.90', heat: 'Mild', image_url: undefined as string | undefined, sort_order: 1 },
+  { id: '3', name: 'Lotion Mustajab Super Hot', tagline: 'Dengan capsicum • Untuk workout', price: 'RM 24.90', badge: 'Popular', heat: 'Hot', image_url: undefined as string | undefined, sort_order: 2 },
+  { id: '4', name: 'Lotion Mustajab Extra Hot', tagline: 'Shaping • Extra halia', price: 'RM 23.90', heat: 'Hot', image_url: undefined as string | undefined, sort_order: 3 },
+  { id: '5', name: 'Lotion Mustajab Extreme Hot', tagline: 'Kepanasan maksimum • Untuk sukan lasak', price: 'RM 25.90', badge: 'Terbaru', heat: 'Extreme', image_url: undefined as string | undefined, sort_order: 4 },
+  { id: '6', name: 'Lotion Mustajab Extra Ginger', tagline: 'Halia berganda • Kehidupan aktif', price: 'RM 23.90', heat: 'Hot', image_url: undefined as string | undefined, sort_order: 5 },
+  { id: '7', name: 'Lotion Mustajab Pati Halia 65ml', tagline: 'Saiz mini • Travel size', price: 'RM 14.90', badge: 'Jimat', heat: 'Mild', image_url: undefined as string | undefined, sort_order: 6 },
+  { id: '8', name: 'Lotion Mustajab Super Hot 65ml', tagline: 'Saiz mini • Capsicum workout', price: 'RM 15.90', heat: 'Hot', image_url: undefined as string | undefined, sort_order: 7 },
 ];
 
 const defaultBenefits = [
@@ -101,25 +49,29 @@ export default async function HomePage() {
         badge: p.badge || undefined,
         heat: p.heat || undefined,
         image_url: p.image_url || undefined,
+        sort_order: (p as { sort_order?: number }).sort_order ?? 999,
       }))
     : productsFallback;
 
   const byId = new Map(products.map((p) => [p.id, p]));
 
-  // KOLEKSI HARUMAN (atas) — produk_ids atau semua produk
+  const sortByOrder = <T extends { sort_order?: number }>(arr: T[]) =>
+    [...arr].sort((a, b) => (a.sort_order ?? 999) - (b.sort_order ?? 999));
+
+  // KOLEKSI HARUMAN (atas) — produk_ids atau semua produk, ikut sort_order
   const harumanIds = (content.produk_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
   const harumanProducts =
     harumanIds.length > 0
-      ? (harumanIds.map((id) => byId.get(id)).filter(Boolean) as typeof products)
+      ? sortByOrder(harumanIds.map((id) => byId.get(id)).filter(Boolean) as typeof products)
       : products;
 
-  // KOLEKSI LEGEND (bawah) — produk_legend_ids atau default: Mild/berbadge (max 4)
+  // KOLEKSI LEGEND (bawah) — produk_legend_ids atau default: Mild/berbadge (max 4), ikut sort_order
   const legendIds = (content.produk_legend_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const mildOrBadge = products.filter((p) => p.heat === 'Mild' || p.badge).slice(0, 4);
+  const mildOrBadge = sortByOrder(products.filter((p) => p.heat === 'Mild' || p.badge)).slice(0, 4);
   const legendProducts =
     legendIds.length > 0
-      ? (legendIds.map((id) => byId.get(id)).filter(Boolean) as typeof products)
-      : mildOrBadge.length > 0 ? mildOrBadge : products.slice(0, 4);
+      ? sortByOrder(legendIds.map((id) => byId.get(id)).filter(Boolean) as typeof products)
+      : mildOrBadge.length > 0 ? mildOrBadge : sortByOrder(products).slice(0, 4);
 
   const CONTACT_EMAIL = 'admin@duniaherbs.com.my';
   const EMAIL_LINK = `mailto:${CONTACT_EMAIL}`;
@@ -456,6 +408,7 @@ export default async function HomePage() {
                 <Link href="/stockist" className="text-stone-500 hover:text-herb-gold transition">Stockist</Link>
                 <Link href="/faq" className="text-stone-500 hover:text-herb-gold transition">FAQ</Link>
                 <Link href="/bersalin" className="text-stone-500 hover:text-herb-gold transition">Selepas Bersalin</Link>
+                <Link href="/bentuk-badan" className="text-stone-500 hover:text-herb-gold transition">Bentuk Badan Ideal</Link>
                 <Link href="/info" className="text-stone-500 hover:text-herb-gold transition">Info AM</Link>
                 <Link href="/polisi" className="text-stone-500 hover:text-herb-gold transition">Polisi</Link>
               </div>

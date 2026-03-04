@@ -7,72 +7,70 @@ import { getHeatLabel } from '@/lib/heat';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Selepas Bersalin & Berpantang — Dunia Herbs',
-  description: 'Panduan penjagaan wanita selepas bersalin dengan losyen pati halia semula jadi. Menggantikan param & pilis tradisional.',
+  title: 'Bentuk Badan Ideal (Produk Luaran) — Dunia Herbs',
+  description: 'Set Mini Sauna Legend — losyen pati halia untuk kesan panas seperti bersauna. Extra Hot, Super Hot & Extreme Hot. Bantu metabolisme, bakar lemak, kurangkan selulit.',
   openGraph: {
-    title: 'Selepas Bersalin & Berpantang — Dunia Herbs',
-    description: 'Panduan penjagaan wanita selepas bersalin dengan losyen pati halia semula jadi.',
+    title: 'Bentuk Badan Ideal (Produk Luaran) — Dunia Herbs',
+    description: 'Set penjagaan badan yang memberi kesan panas seperti bersauna. Losyen Mustajab Extra Hot, Super Hot & Extreme Hot.',
   },
 };
 
 const D = {
-  hero_badge: 'Panduan Ibu Berpantang',
-  hero_title: 'Penjagaan Wanita',
-  hero_title_highlight: 'Selepas Bersalin',
-  hero_desc: 'Petua tradisional Melayu dalam sentuhan moden — losyen pati halia semula jadi untuk ibu-ibu yang baru melahirkan dan sedang berpantang.',
-  intro_label: 'Losyen Pati Halia',
-  intro_title: 'Sangat Sinonim Untuk\nKegunaan Wanita Selepas Bersalin',
-  intro_p1: 'Losyen Mustajab Pati Halia Limau Nipis yang menggunakan ramuan utama pati limau nipis dan pati halia mempunyai pelbagai kegunaan hanya di dalam satu produk sahaja.',
-  intro_p2: 'Bauan aroma limau nipis dan halia yang sangat menyegarkan, ditambah pula dengan sedikit bauan \'mint\' dapat membantu menceriakan emosi ibu-ibu selepas bersalin yang biasanya lesu dan tidak bermaya.',
+  hero_badge: 'Produk Luaran',
+  hero_title: 'Bentuk Badan',
+  hero_title_highlight: 'Ideal',
+  hero_desc: 'Set penjagaan badan yang memberi kesan panas seperti bersauna. Mengandungi losyen Mustajab Extra Hot, Super Hot dan Extreme Hot — tahap kepanasan berbeza untuk membantu metabolisme, bakar lemak dan kurangkan selulit.',
+  intro_label: 'Set Mini Sauna Legend',
+  intro_title: 'Kesan Panas Seperti Bersauna\nUntuk Bentuk Badan Yang Diingini',
+  intro_p1: 'Sesuai dengan nama yang diberi, Set Mini Sauna adalah set penjagaan badan yang memberi kesan panas bagi mendapatkan khasiat seperti ketika anda sedang bersauna. Mengandungi 3 Losyen Mustajab — Extra Hot, Super Hot dan Extreme Hot — bersaiz 130ml setiap jenis.',
+  intro_p2: 'Tahap kepanasan berbeza bertindak sebagai ejen yang dapat meningkatkan kadar metabolisme badan dan seterusnya boleh membantu membakar lemak serta membantu mengurangkan selulit di bahagian perut, peha, pinggul dan lain-lain tempat yang diperlukan.',
   tips_label: 'Khasiat & Kegunaan',
-  tips_title: 'Kebaikan Untuk Ibu Berpantang',
-  tip_1_icon: '🌿', tip_1_title: 'Menggantikan Param & Pilis', tip_1_desc: 'Losyen Mustajab Pati Halia Limau Nipis memudahkan ibu-ibu berpantang tanpa perlu sediakan param dan pilis secara tradisional.',
-  tip_2_icon: '💆‍♀️', tip_2_title: 'Urutan Lembut', tip_2_desc: 'Lakukan sedikit urutan menggunakan losyen untuk membantu pengaliran darah yang lebih lancar dan menghilangkan rasa kebas.',
-  tip_3_icon: '🩹', tip_3_title: 'Membuang Angin', tip_3_desc: 'Pati halia dan limau nipis membantu membuang angin dalam badan — masalah utama wanita selepas bersalin.',
-  tip_4_icon: '✨', tip_4_title: 'Mengempiskan Perut', tip_4_desc: 'Sesuai digunakan bersama bengkung untuk mendapatkan kesan optimum mengempiskan perut selepas bersalin.',
-  tip_5_icon: '🧘‍♀️', tip_5_title: 'Menyegarkan Badan', tip_5_desc: 'Aroma limau nipis dan halia yang menyegarkan membantu menceriakan emosi ibu-ibu yang lesu selepas bersalin.',
-  tip_6_icon: '🕐', tip_6_title: 'Jimat Masa', tip_6_desc: 'Tidak berminyak dan mudah menyerap — memudahkan ibu yang berpantang sendiri tanpa tukang urut.',
-  article_1_title: 'Petua Turun-Temurun, Kemudahan Moden', article_1_content: 'Sejak zaman nenek moyang, wanita Melayu mengamalkan petua berpantang menggunakan halia, limau nipis, dan rempah ratus semula jadi. Dunia Herbs menggabungkan kebijaksanaan tradisional ini dalam bentuk losyen moden yang mudah digunakan — tanpa perlu menumbuk param atau menyediakan pilis.',
-  article_2_title: 'Kenapa Pati Halia?', article_2_content: 'Halia dikenali sebagai "ratu herba" dalam perubatan tradisional Melayu. Ia membantu melancarkan peredaran darah, mengurangkan bengkak, membuang angin, dan memberikan kehangatan semula jadi pada badan. Losyen Mustajab menggunakan pati halia tulen 100% — bukan perisa atau bahan sintetik.',
-  article_3_title: 'Sesuai Untuk Semua Ibu', article_3_content: 'Sama ada bersalin normal atau pembedahan, losyen ini sesuai untuk semua ibu. Sapuan lembut pada perut, pinggang, dan anggota badan sudah memadai. Ditambah dengan pemakaian bengkung, hasilnya lebih berkesan. Sesuai juga untuk ibu yang berpantang sendiri tanpa bantuan tukang urut.',
+  tips_title: 'Kebaikan Set Mini Sauna',
+  tip_1_icon: '🔥', tip_1_title: 'Tingkat Metabolisme', tip_1_desc: 'Kesan panas membantu meningkatkan kadar metabolisme badan untuk pembakaran lemak yang lebih efisien.',
+  tip_2_icon: '💪', tip_2_title: 'Bakar Lemak', tip_2_desc: 'Digunakan bersama bengkung, korset atau girdle — amat digalakkan berserta senaman ringan untuk kesan optimum.',
+  tip_3_icon: '✨', tip_3_title: 'Kurangkan Selulit', tip_3_desc: 'Sapu pada bahagian bermasalah seperti perut, lengan, peha dan pinggul — urutan pusingan seperti jam sebelum bengkung.',
+  tip_4_icon: '🏃', tip_4_title: 'Sesuai Bersenam', tip_4_desc: 'Super Hot & Extreme Hot sesuai disapu ketika bersenam atau bersukan — kehangatan tahan lama membantu pembakaran.',
+  tip_5_icon: '🩹', tip_5_title: 'Singkir Angin', tip_5_desc: 'Ekstrak halia membantu mengeluarkan angin dalam badan dan memberi keselesaan pada perut, urat dan otot.',
+  tip_6_icon: '⏰', tip_6_title: 'Mudah & Praktikal', tip_6_desc: 'Boleh digunakan waktu pagi sebelum aktiviti atau bila-bila masa. Tidak berminyak, cepat menyerap.',
+  article_1_title: 'Extra Hot — Tahap Panas 3', article_1_content: 'Diformulasikan dengan lebih ekstrak halia untuk tahap panas pertengahan. Amat sesuai untuk mereka yang inginkan bentuk badan yang ideal. Pemakaian bengkung atau korset amat digalakkan. Urutan pusingan seperti jam pada perut sebelum bengkung untuk kesan optimum.',
+  article_2_title: 'Super Hot — Tahap Panas 4', article_2_content: 'Dengan tambahan Capsicum untuk kehangatan yang lebih tinggi. Sesuai untuk surirumah dengan aktiviti harian dan kegunaan ketika bersenam. Mengekalkan kehangatan ketika berpeluh dan membantu membakar lemak dengan lebih efisien. Boleh disapu nipis sebelum aktiviti bermula.',
+  article_3_title: 'Extreme Hot — Tahap Panas 5', article_3_content: 'Tahap kepanasan paling tinggi dengan Iso Slim Complex. Menumpukan pada pembentukan dan kecantikan badan. Disyorkan sapu waktu malam sebelum tidur. Sesuai untuk mereka yang tahan panas dan mahukan kesan maksimum.',
   gallery_label: 'Galeri',
   gallery_title: 'Kegunaan & Cara Pakai',
   produk_label: 'Produk Disyorkan',
-  produk_title: 'Sesuai Untuk Ibu Berpantang',
-  produk_desc: 'Pilihan losyen yang lembut dan sesuai untuk kegunaan wanita selepas bersalin',
-  quote: 'Limau nipis biasa digunakan oleh wanita selepas bersalin semasa dalam pantang sebagai salah satu bahan untuk mengempiskan perut dan menyegarkan badan yang lesu.',
-  quote_author: '— Petua Tradisional Melayu',
-  cta_title: 'Mula Berpantang Dengan Cara Moden',
-  cta_desc: 'Hubungi kami untuk nasihat produk yang sesuai untuk anda. Kami sedia membantu.',
+  produk_title: 'Set Mini Sauna Legend',
+  produk_desc: 'Extra Hot, Super Hot & Extreme Hot — pilihan losyen untuk bentuk badan ideal',
+  quote: 'Ketiga-tiga losyen ini adalah best seller dan kini hadir dalam Set Premium Mini Sauna Legend dengan harga mampu milik. Jaga pemakanan sihat, elakkan makanan manis dan bergas, serta lakukan senaman untuk kekal cergas dan cantik menawan.',
+  quote_author: '— Dunia Herbs',
+  cta_title: 'Dapatkan Bentuk Badan Ideal Anda',
+  cta_desc: 'Hubungi kami untuk nasihat produk yang sesuai. Kami sedia membantu.',
 };
 
 function c(content: Record<string, string>, key: string) {
-  return content[`bersalin_${key}`] || D[key as keyof typeof D] || '';
+  return content[`bentuk_badan_${key}`] || D[key as keyof typeof D] || '';
 }
 
 const PRODUCT_IMAGE_FALLBACK = 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=400&h=400&fit=crop';
 
-export default async function BersalinPage() {
+export default async function BentukBadanPage() {
   const [products, content] = await Promise.all([getProducts(), getSiteContent()]);
   const CONTACT_EMAIL = 'admin@duniaherbs.com.my';
-  const EMAIL_LINK = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Pertanyaan produk untuk selepas bersalin')}`;
+  const EMAIL_LINK = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Pertanyaan Set Mini Sauna / Bentuk Badan')}`;
 
   const byId = new Map(products.map((p) => [p.id, p]));
   const sortByOrder = <T extends { sort_order?: number }>(arr: T[]) =>
     [...arr].sort((a, b) => ((a as { sort_order?: number }).sort_order ?? 999) - ((b as { sort_order?: number }).sort_order ?? 999));
 
-  // Koleksi Haruman — bersalin_produk_ids (admin bersalin) atau produk_ids atau bersalin_product_ids atau fallback Mild/limau
-  const harumanIds = (content.bersalin_produk_ids || content.produk_ids || content.bersalin_product_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const fallbackHaruman = products.filter(
-    (p) => p.heat === 'Mild' || p.name?.toLowerCase().includes('limau') || p.name?.toLowerCase().includes('lime'),
-  );
+  // Koleksi Haruman — bentuk_badan_product_ids atau produk_ids atau fallback Hot/Extreme
+  const harumanIds = (content.bentuk_badan_product_ids || content.produk_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const fallbackHaruman = products.filter((p) => p.heat && p.heat !== 'Mild');
   const harumanProducts =
     harumanIds.length > 0
       ? sortByOrder(harumanIds.map((id) => byId.get(id)).filter(Boolean) as typeof products)
       : fallbackHaruman.length > 0 ? fallbackHaruman : products;
 
-  // Koleksi Legend — bersalin_produk_legend_ids (admin bersalin) atau produk_legend_ids atau auto Mild/berbadge
-  const legendIds = (content.bersalin_produk_legend_ids || content.produk_legend_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
+  // Koleksi Legend — bentuk_badan_produk_legend_ids (admin bentuk-badan) atau produk_legend_ids atau auto
+  const legendIds = (content.bentuk_badan_produk_legend_ids || content.produk_legend_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
   const mildOrBadge = sortByOrder(products.filter((p) => p.heat === 'Mild' || p.badge)).slice(0, 4);
   const legendProducts =
     legendIds.length > 0
@@ -92,7 +90,6 @@ export default async function BersalinPage() {
 
   return (
     <div className="relative min-h-screen" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
-      {/* Background standard — sama dengan Fasha page */}
       <div className="fixed inset-0 pointer-events-none z-0 bg-[#0a0812]" />
       <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-amber-950/15 via-transparent to-rose-950/10" />
       <div className="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(ellipse_100%_60%_at_50%_0%,rgba(212,168,83,0.08),transparent_50%)]" />
@@ -143,7 +140,7 @@ export default async function BersalinPage() {
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <AnimateIn>
               <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-amber-800/20 shadow-2xl shadow-amber-950/20">
-                <Image src={content.bersalin_hero_image || PRODUCT_IMAGE_FALLBACK} alt="Losyen untuk ibu berpantang" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" unoptimized={!!content.bersalin_hero_image} />
+                <Image src={content.bentuk_badan_hero_image || PRODUCT_IMAGE_FALLBACK} alt="Set Mini Sauna Legend" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" unoptimized={!!content.bentuk_badan_hero_image} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
               </div>
             </AnimateIn>
@@ -211,7 +208,7 @@ export default async function BersalinPage() {
             {[1, 2, 3].map((i) => (
               <AnimateIn key={i} delay={i * 0.05}>
                 <div className="relative aspect-square rounded-xl overflow-hidden border border-amber-800/15 bg-stone-950">
-                  <Image src={content[`bersalin_gallery_${i}`] || PRODUCT_IMAGE_FALLBACK} alt={`Galeri bersalin ${i}`} fill className="object-cover hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 50vw, 33vw" unoptimized={!!content[`bersalin_gallery_${i}`]} />
+                  <Image src={content[`bentuk_badan_gallery_${i}`] || PRODUCT_IMAGE_FALLBACK} alt={`Galeri ${i}`} fill className="object-cover hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 50vw, 33vw" unoptimized={!!content[`bentuk_badan_gallery_${i}`]} />
                 </div>
               </AnimateIn>
             ))}
@@ -223,7 +220,7 @@ export default async function BersalinPage() {
           <div className="max-w-5xl mx-auto">
             <AnimateIn>
               <p className="text-amber-400/70 text-xs tracking-[0.2em] uppercase mb-2 text-center">{content.produk_label || 'Koleksi'}</p>
-              <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-100 text-center mb-3">{content.produk_title || 'KOLEKSI HARUMAN'}</h2>
+              <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-100 text-center mb-3">{content.produk_title || c(content, 'produk_title')}</h2>
               <p className="text-stone-500 text-sm text-center mb-10 max-w-lg mx-auto">{content.produk_subtitle || c(content, 'produk_desc')}</p>
             </AnimateIn>
             <AnimateStagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -24,12 +24,14 @@ type Product = {
 };
 
 const HEAT_OPTIONS = [
+  { value: 'None', label: 'None' },
   { value: 'Mild', label: 'Mild (Tahap 1)' },
   { value: 'Hot', label: 'Hot (Tahap 2)' },
   { value: 'Extra Hot', label: 'Extra Hot (Tahap 3)' },
   { value: 'Super Hot', label: 'Super Hot (Tahap 4)' },
   { value: 'Extreme', label: 'Extreme Hot (Tahap 5)' },
   { value: 'Mix', label: 'Mix (Set campur tahap kepanasan)' },
+  { value: 'Produk minuman/makanan', label: 'Produk minuman/makanan' },
 ];
 
 const emptyProduct: Omit<Product, 'id'> = {
@@ -153,41 +155,56 @@ export default function AdminProdukPage() {
     e.preventDefault();
     setSaving(true);
     setError('');
-    const supabase = getSupabaseBrowser();
-    const payload = {
-      name: form.name,
-      tagline: form.tagline,
-      price: form.price,
-      badge: form.badge || null,
-      heat: form.heat,
-      size: form.size,
-      description: form.description,
-      benefits: form.benefits,
-      usage_info: form.usage_info,
-      image_url: form.image_url || null,
-      packaging_color: form.packaging_color || null,
-      sort_order: form.sort_order,
-      visible: form.visible,
-    };
+    try {
+      const supabase = getSupabaseBrowser();
+      const payload = {
+        name: form.name,
+        tagline: form.tagline,
+        price: form.price,
+        badge: form.badge || null,
+        heat: form.heat,
+        size: form.size,
+        description: form.description,
+        benefits: form.benefits.filter(Boolean),
+        usage_info: form.usage_info,
+        image_url: form.image_url || null,
+        packaging_color: form.packaging_color || null,
+        sort_order: form.sort_order,
+        visible: form.visible,
+      };
 
-    if (editing) {
-      const { error: err } = await supabase.from('products').update(payload).eq('id', editing.id);
-      if (err) {
-        setError(err.message);
-        setSaving(false);
-        return;
+      if (editing) {
+        const { error: err } = await supabase.from('products').update(payload).eq('id', editing.id);
+        if (err) {
+          setError(err.message);
+          return;
+        }
+        setProducts((prev) =>
+          prev.map((p) => (p.id === editing.id ? { ...p, ...payload } : p)),
+        );
+      } else {
+        const { data: inserted, error: err } = await supabase
+          .from('products')
+          .insert(payload)
+          .select()
+          .single();
+        if (err) {
+          setError(err.message);
+          return;
+        }
+        if (inserted) {
+          setProducts((prev) => [...prev, inserted as Product].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)));
+        } else {
+          fetchProducts();
+        }
       }
-    } else {
-      const { error: err } = await supabase.from('products').insert(payload);
-      if (err) {
-        setError(err.message);
-        setSaving(false);
-        return;
-      }
+      closeModal();
+    } catch (ex) {
+      const msg = ex instanceof Error ? ex.message : String(ex);
+      setError(msg || 'Ralat tidak diketahui');
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    closeModal();
-    fetchProducts();
   }
 
   async function handleDelete(row: Product) {
@@ -203,7 +220,7 @@ export default function AdminProdukPage() {
 
   const benefitsText = form.benefits.join('\n');
   const setBenefitsText = (s: string) =>
-    setForm((f) => ({ ...f, benefits: s ? s.split('\n').filter(Boolean) : [] }));
+    setForm((f) => ({ ...f, benefits: s ? s.split(/\r?\n/) : [] }));
 
   const inputClass =
     'w-full rounded-xl border border-stone-700 bg-herb-surface px-4 py-2.5 text-sm text-stone-100 placeholder-stone-500 focus:border-herb-gold focus:outline-none';
@@ -257,6 +274,13 @@ export default function AdminProdukPage() {
           <span className="text-herb-gold font-medium">Haruman & Legend:</span> Toggle untuk pilih produk dalam setiap koleksi. <strong>Haruman</strong> (atas) — kosong = semua produk. <strong>Legend</strong> (bawah) — kosong = auto (Mild/berbadge).
         </p>
       </div>
+
+      {error && !modalOpen && (
+        <div className="mb-4 rounded-xl border border-red-900/50 bg-red-950/20 px-4 py-3 text-red-400 text-sm">
+          {error}
+          <button onClick={() => setError('')} className="ml-2 text-red-500 hover:text-red-300">×</button>
+        </div>
+      )}
 
       {loading ? (
         <p className="text-stone-500 text-sm">Memuatkan...</p>
@@ -344,7 +368,7 @@ export default function AdminProdukPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-            onClick={closeModal}
+            onClick={() => !saving && closeModal()}
             aria-hidden
           />
           <div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border border-stone-700 bg-herb-surface shadow-2xl">
@@ -436,6 +460,9 @@ export default function AdminProdukPage() {
                 <textarea
                   value={benefitsText}
                   onChange={(e) => setBenefitsText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') e.stopPropagation();
+                  }}
                   className={`${inputClass} min-h-[100px]`}
                   placeholder="Satu benefit per baris"
                   rows={4}
@@ -519,14 +546,15 @@ export default function AdminProdukPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded-xl bg-herb-gold px-5 py-2.5 text-sm font-semibold text-herb-dark transition hover:bg-herb-goldLight disabled:opacity-50"
+                  className="rounded-xl bg-herb-gold px-5 py-2.5 text-sm font-semibold text-herb-dark transition hover:bg-herb-goldLight disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saving ? 'Menyimpan...' : editing ? 'Simpan' : 'Tambah'}
                 </button>
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-xl border border-stone-600 px-5 py-2.5 text-sm text-stone-300 transition hover:bg-stone-800"
+                  disabled={saving}
+                  className="rounded-xl border border-stone-600 px-5 py-2.5 text-sm text-stone-300 transition hover:bg-stone-800 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Batal
                 </button>

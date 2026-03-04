@@ -18,6 +18,7 @@ const nav = [
   { label: 'Sales', href: '/admin/sales', desc: 'Teknik jualan — AI only, admin sahaja' },
   { label: 'Fasha Landing', href: '/admin/fasha', preview: '/fasha', desc: 'Landing page Fasha' },
   { label: 'Selepas Bersalin', href: '/admin/bersalin', preview: '/bersalin', desc: 'Halaman ibu berpantang' },
+  { label: 'Bentuk Badan', href: '/admin/bentuk-badan', preview: '/bentuk-badan', desc: 'Set Mini Sauna / bentuk badan ideal' },
   { label: 'Pesanan', href: '/admin/orders', desc: 'Pesanan & pembayaran Billplz' },
   { label: 'Media', href: '/admin/media', desc: 'Upload gambar & video' },
   { label: 'Users', href: '/admin/users', desc: 'Pengguna admin' },

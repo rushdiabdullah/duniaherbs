@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { getHeatLabel } from '@/lib/heat';
 
 type Product = {
   id: string;
@@ -127,7 +128,7 @@ export function ProductCarousel({ products }: { products: Product[] }) {
                       <p className="text-herb-gold font-medium">{product.price}</p>
                       {product.heat && (
                         <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${heatColors[product.heat] || heatColors.Mild}`}>
-                          {product.heat}
+                          {getHeatLabel(product.heat)}
                         </span>
                       )}
                     </div>

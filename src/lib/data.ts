@@ -35,7 +35,7 @@ export async function getFashaLandingContent() {
       .from('products')
       .select('*')
       .eq('visible', true)
-      .order('sort_order')
+      .order('sort_order', { ascending: true })
       .limit(3);
     picks = data ?? [];
   }
@@ -73,7 +73,7 @@ export async function getProducts() {
       .from('products')
       .select('*')
       .eq('visible', true)
-      .order('sort_order');
+      .order('sort_order', { ascending: true });
     return data ?? [];
   } catch {
     return [];
@@ -100,7 +100,7 @@ export async function getProductsForAI(): Promise<Array<{ name: string; price: s
       .from('products')
       .select('name, price, packaging_color')
       .eq('visible', true)
-      .order('sort_order');
+      .order('sort_order', { ascending: true });
     return (data ?? []).map((p) => ({
       name: p.name ?? '',
       price: p.price ?? '',
@@ -117,7 +117,7 @@ export async function getTestimonials() {
       .from('testimonials')
       .select('*')
       .eq('visible', true)
-      .order('sort_order');
+      .order('sort_order', { ascending: true });
     return data ?? [];
   } catch {
     return [];
@@ -130,7 +130,7 @@ export async function getFaqs() {
       .from('faqs')
       .select('*')
       .eq('visible', true)
-      .order('sort_order');
+      .order('sort_order', { ascending: true });
     return data ?? [];
   } catch {
     return [];
@@ -143,7 +143,7 @@ export async function getStockists() {
       .from('stockists')
       .select('*')
       .eq('visible', true)
-      .order('sort_order');
+      .order('sort_order', { ascending: true });
     return data ?? [];
   } catch {
     return [];
@@ -155,7 +155,7 @@ export async function getMilestones() {
     const { data } = await supabase
       .from('milestones')
       .select('*')
-      .order('sort_order');
+      .order('sort_order', { ascending: true });
     return data ?? [];
   } catch {
     return [];
@@ -168,7 +168,7 @@ export async function getKnowledgeBase() {
       .from('knowledge_base')
       .select('id, category, title, content')
       .eq('visible', true)
-      .order('sort_order');
+      .order('sort_order', { ascending: true });
     return data ?? [];
   } catch {
     return [];
@@ -240,7 +240,7 @@ export async function getKnowledgeArticles() {
       .from('knowledge_base')
       .select('id, category, title, content, updated_at')
       .eq('visible', true)
-      .order('sort_order');
+      .order('sort_order', { ascending: true });
     return data ?? [];
   } catch {
     return [];
@@ -255,7 +255,7 @@ export async function getInfoAmArticles() {
       .select('id, category, title, content, updated_at')
       .eq('visible', true)
       .neq('category', 'Sales')
-      .order('sort_order');
+      .order('sort_order', { ascending: true });
     return data ?? [];
   } catch {
     return [];
@@ -297,7 +297,7 @@ export async function getVideos() {
       .from('videos')
       .select('*')
       .eq('visible', true)
-      .order('sort_order');
+      .order('sort_order', { ascending: true });
     return data ?? [];
   } catch {
     return [];
