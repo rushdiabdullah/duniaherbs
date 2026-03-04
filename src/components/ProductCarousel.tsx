@@ -14,6 +14,8 @@ type Product = {
   badge?: string;
   heat?: string;
   image_url?: string;
+  originalPrice?: string;
+  discountLabel?: string;
 };
 
 const productImages: Record<string, string> = {
@@ -124,8 +126,18 @@ export function ProductCarousel({ products }: { products: Product[] }) {
                   <div className="p-4">
                     <h3 className="font-semibold text-stone-100">{product.name}</h3>
                     <p className="text-xs text-stone-500 mt-0.5 line-clamp-2">{product.tagline}</p>
-                    <div className="mt-2 flex items-center justify-between">
-                      <p className="text-herb-gold font-medium">{product.price}</p>
+                    <div className="mt-2 flex items-center justify-between gap-2">
+                      <div className="min-w-0">
+                        {product.originalPrice && product.discountLabel ? (
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-stone-500 line-through text-xs">{product.originalPrice}</span>
+                            <span className="text-herb-gold font-medium">{product.price}</span>
+                            <span className="rounded-full bg-green-900/40 px-1.5 py-0.5 text-[10px] text-green-400">{product.discountLabel}</span>
+                          </div>
+                        ) : (
+                          <p className="text-herb-gold font-medium">{product.price}</p>
+                        )}
+                      </div>
                       {product.heat && (
                         <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${heatColors[product.heat] || heatColors.Mild}`}>
                           {getHeatLabel(product.heat)}

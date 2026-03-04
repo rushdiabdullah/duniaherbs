@@ -2,8 +2,10 @@
 
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/lib/cart';
+import { usePromotions } from '@/hooks/usePromotions';
+import { applyPromotion } from '@/lib/promotions';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 const FALLBACK = 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=100&h=100&fit=crop';
 const CUSTOMER_STORAGE_KEY = 'duniaherb_customer_details';
@@ -57,8 +59,20 @@ function clearSavedCustomer() {
 export default function CartDrawer() {
   const pathname = usePathname();
   const { items, count, total, updateQty, removeItem, clearCart } = useCart();
+  const { promotions } = usePromotions();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<'cart' | 'checkout'>('cart');
+
+  const { discountedTotal, itemPrices } = useMemo(() => {
+    let sum = 0;
+    const prices: Record<string, number> = {};
+    for (const item of items) {
+      const { finalPrice } = applyPromotion(item.priceNum, item.id, promotions);
+      prices[item.id] = finalPrice;
+      sum += finalPrice * item.qty;
+    }
+    return { discountedTotal: Math.round(sum * 100) / 100, itemPrices: prices };
+  }, [items, promotions]);
 
   if (pathname?.startsWith('/admin')) return null;
 
@@ -111,7 +125,7 @@ export default function CartDrawer() {
         body: JSON.stringify({
           productId: items.length === 1 ? items[0].id : null,
           productName: items.length === 1 ? items[0].name : `${items.length} produk`,
-          price: total,
+          price: discountedTotal,
           quantity: 1,
           customerName: name.trim(),
           customerEmail: email.trim(),
@@ -209,7 +223,9 @@ export default function CartDrawer() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-stone-200 text-sm font-medium truncate">{item.name}</p>
-                            <p className="text-herb-gold text-xs mt-0.5">{item.price}</p>
+                            <p className="text-herb-gold text-xs mt-0.5">
+                              RM {((itemPrices[item.id] ?? item.priceNum) * item.qty).toFixed(2)}
+                            </p>
                             <div className="flex items-center justify-between mt-2">
                               <div className="flex items-center gap-1.5">
                                 <button onClick={() => updateQty(item.id, item.qty - 1)} className="h-6 w-6 rounded border border-stone-700 text-stone-400 hover:text-stone-200 text-xs flex items-center justify-center transition">-</button>
@@ -230,7 +246,7 @@ export default function CartDrawer() {
                   <div className="border-t border-stone-800 px-5 py-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-stone-400 text-sm">Jumlah</span>
-                      <span className="text-herb-gold font-semibold text-lg">RM {total.toFixed(2)}</span>
+                      <span className="text-herb-gold font-semibold text-lg">RM {discountedTotal.toFixed(2)}</span>
                     </div>
                     <button
                       onClick={() => setStep('checkout')}
@@ -251,15 +267,19 @@ export default function CartDrawer() {
                   {/* Order Summary */}
                   <div className="rounded-xl border border-stone-700 bg-herb-surface/40 p-4">
                     <p className="text-stone-400 text-xs uppercase tracking-wider mb-2">Ringkasan Pesanan</p>
-                    {items.map((item) => (
-                      <div key={item.id} className="flex justify-between text-sm py-1">
-                        <span className="text-stone-300">{item.name} <span className="text-stone-500">x{item.qty}</span></span>
-                        <span className="text-stone-300">RM {(item.priceNum * item.qty).toFixed(2)}</span>
-                      </div>
-                    ))}
+                    {items.map((item) => {
+                      const unitPrice = itemPrices[item.id] ?? item.priceNum;
+                      const lineTotal = unitPrice * item.qty;
+                      return (
+                        <div key={item.id} className="flex justify-between text-sm py-1">
+                          <span className="text-stone-300">{item.name} <span className="text-stone-500">x{item.qty}</span></span>
+                          <span className="text-stone-300">RM {lineTotal.toFixed(2)}</span>
+                        </div>
+                      );
+                    })}
                     <div className="flex justify-between text-sm pt-2 mt-2 border-t border-stone-800">
                       <span className="text-stone-200 font-medium">Jumlah</span>
-                      <span className="text-herb-gold font-semibold">RM {total.toFixed(2)}</span>
+                      <span className="text-herb-gold font-semibold">RM {discountedTotal.toFixed(2)}</span>
                     </div>
                   </div>
 
@@ -336,7 +356,7 @@ export default function CartDrawer() {
                         Memproses...
                       </>
                     ) : (
-                      `Bayar RM ${total.toFixed(2)}`
+                      `Bayar RM ${discountedTotal.toFixed(2)}`
                     )}
                   </button>
                   <button type="button" onClick={() => setStep('cart')} className="w-full text-center text-stone-500 text-xs hover:text-stone-300 transition">

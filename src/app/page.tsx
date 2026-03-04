@@ -9,7 +9,8 @@ import { Marquee } from '@/components/Marquee';
 import { TestimonialSlider } from '@/components/TestimonialSlider';
 import { VideoShowcase } from '@/components/VideoShowcase';
 import { VideoGallery } from '@/components/VideoGallery';
-import { getProducts, getSiteContent, getMilestones, getFaqs } from '@/lib/data';
+import { getProducts, getSiteContent, getMilestones, getFaqs, getActivePromotions } from '@/lib/data';
+import { applyPromotion, formatPrice } from '@/lib/promotions';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,11 +34,12 @@ const defaultBenefits = [
 ];
 
 export default async function HomePage() {
-  const [dbProducts, content, milestones, faqs] = await Promise.all([
+  const [dbProducts, content, milestones, faqs, promotions] = await Promise.all([
     getProducts(),
     getSiteContent(),
     getMilestones(),
     getFaqs(),
+    getActivePromotions(),
   ]);
 
   const products = dbProducts.length > 0
@@ -60,7 +62,7 @@ export default async function HomePage() {
 
   // KOLEKSI HARUMAN (atas) — produk_ids atau semua produk, ikut sort_order
   const harumanIds = (content.produk_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const harumanProducts =
+  const harumanRaw =
     harumanIds.length > 0
       ? sortByOrder(harumanIds.map((id) => byId.get(id)).filter(Boolean) as typeof products)
       : products;
@@ -68,10 +70,31 @@ export default async function HomePage() {
   // KOLEKSI LEGEND (bawah) — produk_legend_ids atau default: Mild/berbadge (max 4), ikut sort_order
   const legendIds = (content.produk_legend_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
   const mildOrBadge = sortByOrder(products.filter((p) => p.heat === 'Mild' || p.badge)).slice(0, 4);
-  const legendProducts =
+  const legendRaw =
     legendIds.length > 0
       ? sortByOrder(legendIds.map((id) => byId.get(id)).filter(Boolean) as typeof products)
       : mildOrBadge.length > 0 ? mildOrBadge : sortByOrder(products).slice(0, 4);
+
+  // Apply promotions to product prices for display
+  const applyPromoToProducts = <T extends { id: string; price: string }>(arr: T[]) =>
+    arr.map((p) => {
+      const priceNum = parseFloat((p.price || '0').replace(/[^0-9.]/g, ''));
+      const { finalPrice, appliedPromo } = applyPromotion(priceNum, p.id, promotions);
+      const hasDiscount = appliedPromo && finalPrice < priceNum;
+      return {
+        ...p,
+        price: hasDiscount ? formatPrice(finalPrice) : p.price,
+        originalPrice: hasDiscount ? p.price : undefined,
+        discountLabel: hasDiscount
+          ? appliedPromo!.discount_type === 'percentage'
+            ? `${appliedPromo!.discount_value}% off`
+            : `RM ${appliedPromo!.discount_value} off`
+          : undefined,
+      };
+    });
+
+  const harumanProducts = applyPromoToProducts(harumanRaw);
+  const legendProducts = applyPromoToProducts(legendRaw);
 
   const CONTACT_EMAIL = 'admin@duniaherbs.com.my';
   const EMAIL_LINK = `mailto:${CONTACT_EMAIL}`;

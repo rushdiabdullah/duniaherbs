@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { createBill } from '@/lib/billplz';
+import { getActivePromotions } from '@/lib/data';
+import { applyPromotion } from '@/lib/promotions';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -35,11 +37,23 @@ export async function POST(req: NextRequest) {
     }
 
     const qty = Math.max(1, Number(quantity) || 1);
-    const priceNum = parseFloat(String(price).replace(/[^0-9.]/g, ''));
+    let priceNum = parseFloat(String(price).replace(/[^0-9.]/g, ''));
     if (isNaN(priceNum) || priceNum <= 0) {
       return NextResponse.json({ error: 'Harga tidak sah.' }, { status: 400 });
     }
-    const amountCents = Math.round(priceNum * qty * 100);
+    // Recalculate with promotions if items provided (use service role to bypass RLS)
+    const itemsList = Array.isArray(items) ? items : [];
+    if (itemsList.length > 0) {
+      const promotions = await getActivePromotions(supabase);
+      let total = 0;
+      for (const it of itemsList) {
+        const unitPrice = typeof it.price === 'number' ? it.price : parseFloat(String(it.price || 0).replace(/[^0-9.]/g, ''));
+        const { finalPrice } = applyPromotion(unitPrice, it.id || '', promotions);
+        total += finalPrice * (it.qty || 1);
+      }
+      priceNum = total;
+    }
+    const amountCents = Math.round(priceNum * 100);
 
     const orderNo = generateOrderNo();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';

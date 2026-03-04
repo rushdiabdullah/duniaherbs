@@ -1,4 +1,5 @@
 import { supabase } from './supabase';
+import { getSupabaseService } from './supabase-service';
 
 export async function getSiteContent() {
   try {
@@ -90,6 +91,71 @@ export async function getProduct(id: string) {
     return data;
   } catch {
     return null;
+  }
+}
+
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { Promotion } from './promotions';
+
+export type { Promotion };
+
+export async function getPromotions(client?: SupabaseClient): Promise<Promotion[]> {
+  try {
+    const db = client ?? getSupabaseService() ?? supabase;
+    const { data } = await db
+      .from('promotions')
+      .select('*')
+      .order('created_at', { ascending: false });
+    return (data ?? []).map((r) => ({
+      ...r,
+      discount_value: Number(r.discount_value),
+    })) as Promotion[];
+  } catch {
+    return [];
+  }
+}
+
+const GROUP_CONTENT_KEYS: Record<string, string[]> = {
+  haruman: ['produk_ids'],
+  legend: ['produk_legend_ids'],
+  bersalin: ['bersalin_produk_ids', 'bersalin_produk_legend_ids'],
+  bentuk_badan: ['bentuk_badan_product_ids', 'bentuk_badan_produk_legend_ids'],
+  minuman: ['minuman_product_ids', 'minuman_produk_legend_ids'],
+  seisi_keluarga: ['seisi_keluarga_product_ids', 'seisi_keluarga_produk_legend_ids'],
+};
+
+function resolveGroupProductIds(content: Record<string, string>, groupKey: string): string {
+  const keys = GROUP_CONTENT_KEYS[groupKey];
+  if (!keys) return '';
+  const ids = new Set<string>();
+  for (const k of keys) {
+    const val = content[k] || '';
+    val.split(',').map((s) => s.trim()).filter(Boolean).forEach((id) => ids.add(id));
+  }
+  return [...ids].join(',');
+}
+
+/** Active promotions only (is_active + within date range). Resolves group_key to product_ids. */
+export async function getActivePromotions(client?: SupabaseClient): Promise<Promotion[]> {
+  try {
+    const [all, content] = await Promise.all([getPromotions(client), getSiteContent()]);
+    const today = new Date().toISOString().slice(0, 10);
+    return all
+      .filter((p) => {
+        if (!p.is_active) return false;
+        if (p.start_date && p.start_date > today) return false;
+        if (p.end_date && p.end_date < today) return false;
+        return true;
+      })
+      .map((p) => {
+        if (p.applies_to === 'group' && p.group_key) {
+          const ids = resolveGroupProductIds(content, p.group_key);
+          return { ...p, product_ids: ids || null };
+        }
+        return p;
+      });
+  } catch {
+    return [];
   }
 }
 

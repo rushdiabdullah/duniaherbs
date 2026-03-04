@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getProduct, getProducts, getSiteContent } from '@/lib/data';
+import { getProduct, getProducts, getSiteContent, getActivePromotions } from '@/lib/data';
 import { getHeatLabel } from '@/lib/heat';
+import { applyPromotion, formatPrice } from '@/lib/promotions';
 import AddToCartButton from '@/components/AddToCartButton';
 
 export const dynamic = 'force-dynamic';
@@ -41,7 +42,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
-  const [productResult, content] = await Promise.all([getProduct(id), getSiteContent()]);
+  const [productResult, content, promotions] = await Promise.all([getProduct(id), getSiteContent(), getActivePromotions()]);
   let product = productResult;
   if (!product) product = productsFallback[id];
   if (!product) notFound();
@@ -56,6 +57,10 @@ export default async function ProductPage({ params }: Props) {
   const benefits: string[] = product.benefits && Array.isArray(product.benefits) ? product.benefits : [];
   const usage = product.usage_info || '';
   const imageUrl = product.image_url || PRODUCT_IMAGE_FALLBACK;
+
+  const priceNum = parseFloat((product.price || '0').replace(/[^0-9.]/g, ''));
+  const { finalPrice, discount, appliedPromo } = applyPromotion(priceNum, product.id, promotions);
+  const hasDiscount = appliedPromo && discount > 0;
 
   return (
     <div className="min-h-screen px-6 py-12 max-w-6xl mx-auto">
@@ -99,7 +104,19 @@ export default async function ProductPage({ params }: Props) {
           </div>
 
           <h1 className="font-serif text-3xl md:text-4xl font-bold text-stone-50">{product.name}</h1>
-          <p className="text-herb-gold text-2xl font-semibold mt-3">{product.price}</p>
+          <div className="mt-3 flex items-center gap-3">
+            {hasDiscount ? (
+              <>
+                <span className="text-stone-500 line-through text-lg">{product.price}</span>
+                <span className="text-herb-gold text-2xl font-semibold">{formatPrice(finalPrice)}</span>
+                <span className="rounded-full bg-green-900/40 px-2.5 py-0.5 text-xs text-green-400">
+                  {appliedPromo!.discount_type === 'percentage' ? `${appliedPromo!.discount_value}% off` : `RM ${appliedPromo!.discount_value} off`}
+                </span>
+              </>
+            ) : (
+              <p className="text-herb-gold text-2xl font-semibold">{product.price}</p>
+            )}
+          </div>
           <p className="text-stone-400 leading-relaxed mt-6">{product.description}</p>
 
           {/* Benefits */}
