@@ -230,6 +230,69 @@ export default async function HomePage() {
         <ProductCarousel products={legendProducts} />
       </section>
 
+      {/* Kegunaan & Panduan — 4 link ke halaman bersalin / seisi keluarga / bentuk badan / produk minuman */}
+      <section className="px-6 py-16 max-w-6xl mx-auto">
+        <AnimateIn>
+          <p className="text-herb-gold/80 text-sm tracking-widest uppercase mb-2">{content.kegunaan_label || 'Kegunaan & Panduan'}</p>
+          <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-50 mb-2">{content.kegunaan_title || 'Jelajahi Kegunaan Produk'}</h2>
+          <p className="text-stone-400 mb-10">{content.kegunaan_subtitle || 'Produk kami untuk pelbagai situasi & keperluan'}</p>
+        </AnimateIn>
+        <AnimateStagger className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <AnimateStaggerItem>
+            <Link
+              href="/bersalin"
+              className="flex items-center gap-4 rounded-2xl border border-blue-950/40 bg-herb-surface/60 p-6 backdrop-blur-md transition hover:border-herb-gold/50 hover:bg-herb-surface/80 group"
+            >
+              <span className="text-2xl">🤱</span>
+              <div>
+                <h3 className="font-semibold text-stone-100 group-hover:text-herb-gold transition">Selepas Bersalin</h3>
+                <p className="text-sm text-stone-500 mt-0.5">Losyen untuk ibu berpantang</p>
+              </div>
+              <svg className="h-5 w-5 text-stone-500 group-hover:text-herb-gold ml-auto transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            </Link>
+          </AnimateStaggerItem>
+          <AnimateStaggerItem>
+            <Link
+              href="/seisi-keluarga"
+              className="flex items-center gap-4 rounded-2xl border border-blue-950/40 bg-herb-surface/60 p-6 backdrop-blur-md transition hover:border-herb-gold/50 hover:bg-herb-surface/80 group"
+            >
+              <span className="text-2xl">👨‍👩‍👧‍👦</span>
+              <div>
+                <h3 className="font-semibold text-stone-100 group-hover:text-herb-gold transition">Seisi Keluarga</h3>
+                <p className="text-sm text-stone-500 mt-0.5">Losyen serbaguna untuk seisi rumah</p>
+              </div>
+              <svg className="h-5 w-5 text-stone-500 group-hover:text-herb-gold ml-auto transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            </Link>
+          </AnimateStaggerItem>
+          <AnimateStaggerItem>
+            <Link
+              href="/bentuk-badan"
+              className="flex items-center gap-4 rounded-2xl border border-blue-950/40 bg-herb-surface/60 p-6 backdrop-blur-md transition hover:border-herb-gold/50 hover:bg-herb-surface/80 group"
+            >
+              <span className="text-2xl">💪</span>
+              <div>
+                <h3 className="font-semibold text-stone-100 group-hover:text-herb-gold transition">Bentuk Badan Ideal</h3>
+                <p className="text-sm text-stone-500 mt-0.5">Set Mini Sauna Legend</p>
+              </div>
+              <svg className="h-5 w-5 text-stone-500 group-hover:text-herb-gold ml-auto transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            </Link>
+          </AnimateStaggerItem>
+          <AnimateStaggerItem>
+            <Link
+              href="/produk-minuman"
+              className="flex items-center gap-4 rounded-2xl border border-blue-950/40 bg-herb-surface/60 p-6 backdrop-blur-md transition hover:border-herb-gold/50 hover:bg-herb-surface/80 group"
+            >
+              <span className="text-2xl">🥤</span>
+              <div>
+                <h3 className="font-semibold text-stone-100 group-hover:text-herb-gold transition">Produk Minuman</h3>
+                <p className="text-sm text-stone-500 mt-0.5">Mustajab Extra Daytox & detoks</p>
+              </div>
+              <svg className="h-5 w-5 text-stone-500 group-hover:text-herb-gold ml-auto transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+            </Link>
+          </AnimateStaggerItem>
+        </AnimateStagger>
+      </section>
+
       {/* Video Iklan Komersial */}
       <section className="px-6 py-16 max-w-6xl mx-auto">
         <AnimateIn>
@@ -408,7 +471,9 @@ export default async function HomePage() {
                 <Link href="/stockist" className="text-stone-500 hover:text-herb-gold transition">Stockist</Link>
                 <Link href="/faq" className="text-stone-500 hover:text-herb-gold transition">FAQ</Link>
                 <Link href="/bersalin" className="text-stone-500 hover:text-herb-gold transition">Selepas Bersalin</Link>
+                <Link href="/seisi-keluarga" className="text-stone-500 hover:text-herb-gold transition">Seisi Keluarga</Link>
                 <Link href="/bentuk-badan" className="text-stone-500 hover:text-herb-gold transition">Bentuk Badan Ideal</Link>
+                <Link href="/produk-minuman" className="text-stone-500 hover:text-herb-gold transition">Produk Minuman</Link>
                 <Link href="/info" className="text-stone-500 hover:text-herb-gold transition">Info AM</Link>
                 <Link href="/polisi" className="text-stone-500 hover:text-herb-gold transition">Polisi</Link>
               </div>

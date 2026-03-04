@@ -296,7 +296,7 @@ export default function AdminBentukBadanPage() {
           <div className="flex items-center justify-between mb-2 pb-2 border-b border-stone-800">
             <div>
               <h3 className="text-stone-200 text-sm font-semibold">Koleksi Haruman ({harumanIds.length} dipilih)</h3>
-              <p className="text-stone-500 text-[11px] mt-0.5">Pilih produk untuk seksyen ATAS (Koleksi Haruman). Kosong = guna dari Site Content homepage atau auto Hot/Extreme.</p>
+              <p className="text-stone-500 text-[11px] mt-0.5">Produk untuk seksyen ATAS (Koleksi Haruman). Kosong = seksyen disembunyikan di halaman user.</p>
             </div>
           </div>
           {harumanIds.length > 0 && (
@@ -360,7 +360,7 @@ export default function AdminBentukBadanPage() {
           <div className="flex items-center justify-between mb-2 pb-2 border-b border-stone-800">
             <div>
               <h3 className="text-stone-200 text-sm font-semibold">Koleksi Legend ({legendIds.length} dipilih)</h3>
-              <p className="text-stone-500 text-[11px] mt-0.5">Pilih produk untuk seksyen BAWAH (Koleksi Legend). Kosong = guna dari Site Content homepage atau auto Mild/berbadge.</p>
+              <p className="text-stone-500 text-[11px] mt-0.5">Produk untuk seksyen BAWAH (Koleksi Legend). Kosong = seksyen disembunyikan di halaman user.</p>
             </div>
           </div>
           {legendIds.length > 0 && (

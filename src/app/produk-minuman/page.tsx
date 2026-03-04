@@ -7,63 +7,63 @@ import { getHeatLabel } from '@/lib/heat';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Bentuk Badan Ideal (Produk Luaran) — Dunia Herbs',
-  description: 'Set Mini Sauna Legend — losyen pati halia untuk kesan panas seperti bersauna. Extra Hot, Super Hot & Extreme Hot. Bantu metabolisme, bakar lemak, kurangkan selulit.',
+  title: 'Produk Minuman — Mustajab Extra Daytox — Dunia Herbs',
+  description: 'Cantik Luar Cantik Dalam. Mustajab Extra Daytox — produk detoks untuk membantu mengawal selera makan, menyingkir toksin dan mencapai berat badan ideal.',
   openGraph: {
-    title: 'Bentuk Badan Ideal (Produk Luaran) — Dunia Herbs',
-    description: 'Set penjagaan badan yang memberi kesan panas seperti bersauna. Losyen Mustajab Extra Hot, Super Hot & Extreme Hot.',
+    title: 'Produk Minuman — Mustajab Extra Daytox — Dunia Herbs',
+    description: 'Produk detoks untuk penjagaan dalaman. Membantu proses detoksifikasi badan yang sihat dan berkesan.',
   },
 };
 
 const D = {
-  hero_badge: 'Produk Luaran',
-  hero_title: 'Bentuk Badan',
-  hero_title_highlight: 'Ideal',
-  hero_desc: 'Set penjagaan badan yang memberi kesan panas seperti bersauna. Mengandungi losyen Mustajab Extra Hot, Super Hot dan Extreme Hot — tahap kepanasan berbeza untuk membantu metabolisme, bakar lemak dan kurangkan selulit.',
-  intro_label: 'Set Mini Sauna Legend',
-  intro_title: 'Kesan Panas Seperti Bersauna\nUntuk Bentuk Badan Yang Diingini',
-  intro_p1: 'Sesuai dengan nama yang diberi, Set Mini Sauna adalah set penjagaan badan yang memberi kesan panas bagi mendapatkan khasiat seperti ketika anda sedang bersauna. Mengandungi 3 Losyen Mustajab — Extra Hot, Super Hot dan Extreme Hot — bersaiz 130ml setiap jenis.',
-  intro_p2: 'Tahap kepanasan berbeza bertindak sebagai ejen yang dapat meningkatkan kadar metabolisme badan dan seterusnya boleh membantu membakar lemak serta membantu mengurangkan selulit di bahagian perut, peha, pinggul dan lain-lain tempat yang diperlukan.',
+  hero_badge: 'Produk Minuman',
+  hero_title: 'Cantik Luar',
+  hero_title_highlight: 'Cantik Dalam',
+  hero_desc: 'Tubuh badan kita sering terdedah kepada toksin dari persekitaran setiap hari. Mustajab Extra Daytox membantu proses detoksifikasi badan yang sihat dan berkesan.',
+  intro_label: 'Mustajab Extra Daytox',
+  intro_title: 'Detoks Untuk Badan\nLebih Sihat & Ringan',
+  intro_p1: 'Detoks adalah satu proses pembersihan usus dimana segala toksin, lemak serta lendir yang melekat pada dinding usus dikeluarkan melalui proses pembuangan air besar. Apabila usus bersih dari segala kotoran, barulah tubuh badan dapat menyerap segala nutrien pada tahap yang optimum.',
+  intro_p2: 'Pentingnya amalan detoks untuk penjagaan badan dan mengekalkan kesihatan. Dengan menambahkan makanan kesihatan tambahan dalam pelan detoks seharian, ia dapat membantu untuk proses detoksifikasi badan yang sihat dan berkesan.',
   tips_label: 'Khasiat & Kegunaan',
-  tips_title: 'Kebaikan Set Mini Sauna',
-  tip_1_icon: '🔥', tip_1_title: 'Tingkat Metabolisme', tip_1_desc: 'Kesan panas membantu meningkatkan kadar metabolisme badan untuk pembakaran lemak yang lebih efisien.',
-  tip_2_icon: '💪', tip_2_title: 'Bakar Lemak', tip_2_desc: 'Digunakan bersama bengkung, korset atau girdle — amat digalakkan berserta senaman ringan untuk kesan optimum.',
-  tip_3_icon: '✨', tip_3_title: 'Kurangkan Selulit', tip_3_desc: 'Sapu pada bahagian bermasalah seperti perut, lengan, peha dan pinggul — urutan pusingan seperti jam sebelum bengkung.',
-  tip_4_icon: '🏃', tip_4_title: 'Sesuai Bersenam', tip_4_desc: 'Super Hot & Extreme Hot sesuai disapu ketika bersenam atau bersukan — kehangatan tahan lama membantu pembakaran.',
-  tip_5_icon: '🩹', tip_5_title: 'Singkir Angin', tip_5_desc: 'Ekstrak halia membantu mengeluarkan angin dalam badan dan memberi keselesaan pada perut, urat dan otot.',
-  tip_6_icon: '⏰', tip_6_title: 'Mudah & Praktikal', tip_6_desc: 'Boleh digunakan waktu pagi sebelum aktiviti atau bila-bila masa. Tidak berminyak, cepat menyerap.',
-  article_1_title: 'Extra Hot — Tahap Panas 3', article_1_content: 'Diformulasikan dengan lebih ekstrak halia untuk tahap panas pertengahan. Amat sesuai untuk mereka yang inginkan bentuk badan yang ideal. Pemakaian bengkung atau korset amat digalakkan. Urutan pusingan seperti jam pada perut sebelum bengkung untuk kesan optimum.',
-  article_2_title: 'Super Hot — Tahap Panas 4', article_2_content: 'Dengan tambahan Capsicum untuk kehangatan yang lebih tinggi. Sesuai untuk surirumah dengan aktiviti harian dan kegunaan ketika bersenam. Mengekalkan kehangatan ketika berpeluh dan membantu membakar lemak dengan lebih efisien. Boleh disapu nipis sebelum aktiviti bermula.',
-  article_3_title: 'Extreme Hot — Tahap Panas 5', article_3_content: 'Tahap kepanasan paling tinggi dengan Iso Slim Complex. Menumpukan pada pembentukan dan kecantikan badan. Disyorkan sapu waktu malam sebelum tidur. Sesuai untuk mereka yang tahan panas dan mahukan kesan maksimum.',
+  tips_title: 'Kebaikan Mustajab Extra Daytox',
+  tip_1_icon: '🍽️', tip_1_title: 'Membantu Mengawal Selera Makan', tip_1_desc: 'Mengurangkan rasa lapar dan keinginan untuk mengambil makanan ringan. Badan terasa lebih ringan keesokan harinya.',
+  tip_2_icon: '🧹', tip_2_title: 'Menyingkirkan Bahan Toksik', tip_2_desc: 'Membantu proses detoksifikasi badan — membersihkan toksin, lemak dan lendir yang melekat pada dinding usus.',
+  tip_3_icon: '💚', tip_3_title: 'Membersihkan Kolon', tip_3_desc: 'Usus yang bersih membolehkan tubuh badan menyerap nutrien pada tahap yang optimum untuk kesihatan yang lebih baik.',
+  tip_4_icon: '🎯', tip_4_title: 'Sasaran Berat Badan Ideal', tip_4_desc: 'Membantu mencapai impian untuk mendapatkan bentuk badan yang cantik dan menarik. Mengatasi punca utama kenaikan berat badan.',
+  tip_5_icon: '🌙', tip_5_title: 'Mudah & Praktikal', tip_5_desc: 'Pengambilan 1 sachet setiap malam sebelum tidur akan memudahkan proses pembuangan. Badan terasa lebih ringan keesokan harinya.',
+  tip_6_icon: '✨', tip_6_title: 'Cantik Luar Cantik Dalam', tip_6_desc: 'Produk detoks yang diformulasi untuk penjagaan dalaman. Sesuai untuk rutin harian yang sihat.',
+  article_1_title: 'Apakah Detoks?', article_1_content: 'Detoks adalah satu proses pembersihan usus dimana segala toksin, lemak serta lendir yang melekat pada dinding usus dikeluarkan melalui proses pembuangan air besar. Jika terdedah dengan kerap dan berterusan kepada toksin persekitaran, ia akan melemahkan keupayaan sistem tubuh badan secara semulajadi untuk menyingkirkan toksin.',
+  article_2_title: 'Kenapa Perlu Detoks?', article_2_content: 'Faktor persekitaran dan pemakanan moden boleh menyebabkan pengumpulan toksin yang bakal membawa kepada pelbagai penyakit. Amalan detoks membantu mengekalkan kesihatan dan memastikan badan dapat berfungsi pada tahap optimum.',
+  article_3_title: 'Cara Penggunaan', article_3_content: 'Pengambilan 1 sachet Mustajab Extra Daytox setiap malam sebelum tidur akan memudahkan proses pembuangan. Badan akan terasa lebih ringan keesokan harinya. Kandungan: 15 sachet. Harga: SM RM49.00 / SS RM59.00.',
   gallery_label: 'Galeri',
-  gallery_title: 'Kegunaan & Cara Pakai',
+  gallery_title: 'Produk & Kegunaan',
   produk_label: 'Produk Disyorkan',
-  produk_title: 'Set Mini Sauna Legend',
-  produk_desc: 'Extra Hot, Super Hot & Extreme Hot — pilihan losyen untuk bentuk badan ideal',
-  quote: 'Ketiga-tiga losyen ini adalah best seller dan kini hadir dalam Set Premium Mini Sauna Legend dengan harga mampu milik. Jaga pemakanan sihat, elakkan makanan manis dan bergas, serta lakukan senaman untuk kekal cergas dan cantik menawan.',
+  produk_title: 'Produk Minuman & Makanan',
+  produk_desc: 'Pilihan produk dalaman — detoks, minuman kesihatan dan makanan tambahan',
+  quote: 'Mustajab Extra Daytox akan membantu mencapai impian anda untuk mendapatkan bentuk badan yang cantik dan menarik kerana ianya dapat mengatasi masalah yang menjadi punca utama kenaikan berat badan.',
   quote_author: '— Dunia Herbs',
-  cta_title: 'Dapatkan Bentuk Badan Ideal Anda',
+  cta_title: 'Dapatkan Produk Minuman Anda',
   cta_desc: 'Hubungi kami untuk nasihat produk yang sesuai. Kami sedia membantu.',
 };
 
 function c(content: Record<string, string>, key: string) {
-  return content[`bentuk_badan_${key}`] || D[key as keyof typeof D] || '';
+  return content[`minuman_${key}`] || D[key as keyof typeof D] || '';
 }
 
 const PRODUCT_IMAGE_FALLBACK = 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=400&h=400&fit=crop';
 
-export default async function BentukBadanPage() {
+export default async function ProdukMinumanPage() {
   const [products, content] = await Promise.all([getProducts(), getSiteContent()]);
   const CONTACT_EMAIL = 'admin@duniaherbs.com.my';
-  const EMAIL_LINK = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Pertanyaan Set Mini Sauna / Bentuk Badan')}`;
+  const EMAIL_LINK = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Pertanyaan Produk Minuman / Mustajab Extra Daytox')}`;
 
   const byId = new Map(products.map((p) => [p.id, p]));
   const sortByOrder = <T extends { sort_order?: number }>(arr: T[]) =>
     [...arr].sort((a, b) => ((a as { sort_order?: number }).sort_order ?? 999) - ((b as { sort_order?: number }).sort_order ?? 999));
 
-  // Koleksi Haruman & Legend — hanya papar produk yang admin pilih di Admin Bentuk Badan. Tiada fallback.
-  const harumanIds = (content.bentuk_badan_product_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const legendIds = (content.bentuk_badan_produk_legend_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
+  // Koleksi Haruman & Legend — hanya papar jika admin telah pilih di Admin Produk Minuman
+  const harumanIds = (content.minuman_product_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const legendIds = (content.minuman_produk_legend_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
   const harumanProducts = harumanIds.length > 0 ? sortByOrder(harumanIds.map((id) => byId.get(id)).filter(Boolean) as typeof products) : [];
   const legendProducts = legendIds.length > 0 ? sortByOrder(legendIds.map((id) => byId.get(id)).filter(Boolean) as typeof products) : [];
 
@@ -109,7 +109,7 @@ export default async function BentukBadanPage() {
               <div className="mt-8 flex flex-wrap justify-center gap-4">
                 <a href={EMAIL_LINK} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-700 to-amber-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-amber-900/30 transition hover:from-amber-600 hover:to-amber-500">
                   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                  Email Kami
+                  Beli Online
                 </a>
                 <Link href="/#produk" className="inline-flex items-center gap-2 rounded-xl border border-amber-600/40 px-6 py-3.5 text-sm font-semibold text-amber-300 transition hover:bg-amber-900/20 hover:border-amber-500/50">
                   Lihat Semua Produk
@@ -130,7 +130,7 @@ export default async function BentukBadanPage() {
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <AnimateIn>
               <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-amber-800/20 shadow-2xl shadow-amber-950/20">
-                <Image src={content.bentuk_badan_hero_image || PRODUCT_IMAGE_FALLBACK} alt="Set Mini Sauna Legend" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" unoptimized={!!content.bentuk_badan_hero_image} />
+                <Image src={content.minuman_hero_image || PRODUCT_IMAGE_FALLBACK} alt="Mustajab Extra Daytox" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" unoptimized={!!content.minuman_hero_image} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
               </div>
             </AnimateIn>
@@ -198,7 +198,7 @@ export default async function BentukBadanPage() {
             {[1, 2, 3].map((i) => (
               <AnimateIn key={i} delay={i * 0.05}>
                 <div className="relative aspect-square rounded-xl overflow-hidden border border-amber-800/15 bg-stone-950">
-                  <Image src={content[`bentuk_badan_gallery_${i}`] || PRODUCT_IMAGE_FALLBACK} alt={`Galeri ${i}`} fill className="object-cover hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 50vw, 33vw" unoptimized={!!content[`bentuk_badan_gallery_${i}`]} />
+                  <Image src={content[`minuman_gallery_${i}`] || PRODUCT_IMAGE_FALLBACK} alt={`Galeri ${i}`} fill className="object-cover hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 50vw, 33vw" unoptimized={!!content[`minuman_gallery_${i}`]} />
                 </div>
               </AnimateIn>
             ))}
@@ -210,9 +210,9 @@ export default async function BentukBadanPage() {
         <section className="px-6 py-16 bg-gradient-to-b from-transparent via-amber-950/5 to-transparent">
           <div className="max-w-5xl mx-auto">
             <AnimateIn>
-              <p className="text-amber-400/70 text-xs tracking-[0.2em] uppercase mb-2 text-center">{content.produk_label || 'Koleksi'}</p>
-              <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-100 text-center mb-3">{content.produk_title || c(content, 'produk_title')}</h2>
-              <p className="text-stone-500 text-sm text-center mb-10 max-w-lg mx-auto">{content.produk_subtitle || c(content, 'produk_desc')}</p>
+              <p className="text-amber-400/70 text-xs tracking-[0.2em] uppercase mb-2 text-center">{c(content, 'produk_label')}</p>
+              <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-100 text-center mb-3">{c(content, 'produk_title')}</h2>
+              <p className="text-stone-500 text-sm text-center mb-10 max-w-lg mx-auto">{c(content, 'produk_desc')}</p>
             </AnimateIn>
             <AnimateStagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {harumanProducts.map((product) => (
@@ -293,7 +293,7 @@ export default async function BentukBadanPage() {
             <p className="text-stone-400 mb-8 max-w-lg mx-auto">{c(content, 'cta_desc')}</p>
             <a href={EMAIL_LINK} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-700 to-amber-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-amber-900/30 transition hover:from-amber-600 hover:to-amber-500">
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-              Email Kami
+              Beli Online
             </a>
           </AnimateIn>
         </section>

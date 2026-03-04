@@ -61,23 +61,11 @@ export default async function BersalinPage() {
   const sortByOrder = <T extends { sort_order?: number }>(arr: T[]) =>
     [...arr].sort((a, b) => ((a as { sort_order?: number }).sort_order ?? 999) - ((b as { sort_order?: number }).sort_order ?? 999));
 
-  // Koleksi Haruman — bersalin_produk_ids (admin bersalin) atau produk_ids atau bersalin_product_ids atau fallback Mild/limau
-  const harumanIds = (content.bersalin_produk_ids || content.produk_ids || content.bersalin_product_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const fallbackHaruman = products.filter(
-    (p) => p.heat === 'Mild' || p.name?.toLowerCase().includes('limau') || p.name?.toLowerCase().includes('lime'),
-  );
-  const harumanProducts =
-    harumanIds.length > 0
-      ? sortByOrder(harumanIds.map((id) => byId.get(id)).filter(Boolean) as typeof products)
-      : fallbackHaruman.length > 0 ? fallbackHaruman : products;
-
-  // Koleksi Legend — bersalin_produk_legend_ids (admin bersalin) atau produk_legend_ids atau auto Mild/berbadge
-  const legendIds = (content.bersalin_produk_legend_ids || content.produk_legend_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const mildOrBadge = sortByOrder(products.filter((p) => p.heat === 'Mild' || p.badge)).slice(0, 4);
-  const legendProducts =
-    legendIds.length > 0
-      ? sortByOrder(legendIds.map((id) => byId.get(id)).filter(Boolean) as typeof products)
-      : mildOrBadge.length > 0 ? mildOrBadge : sortByOrder(products).slice(0, 4);
+  // Koleksi Haruman & Legend — hanya papar produk yang admin pilih di Admin Bersalin. Tiada fallback.
+  const harumanIds = (content.bersalin_produk_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const legendIds = (content.bersalin_produk_legend_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const harumanProducts = harumanIds.length > 0 ? sortByOrder(harumanIds.map((id) => byId.get(id)).filter(Boolean) as typeof products) : [];
+  const legendProducts = legendIds.length > 0 ? sortByOrder(legendIds.map((id) => byId.get(id)).filter(Boolean) as typeof products) : [];
 
   const tips = [1, 2, 3, 4, 5, 6].map((i) => ({
     icon: c(content, `tip_${i}_icon`),
@@ -218,7 +206,8 @@ export default async function BersalinPage() {
           </div>
         </section>
 
-        {/* Products — Koleksi Haruman */}
+        {/* Products — Koleksi Haruman (hanya papar jika admin pilih) */}
+        {harumanProducts.length > 0 && (
         <section className="px-6 py-16 bg-gradient-to-b from-transparent via-amber-950/5 to-transparent">
           <div className="max-w-5xl mx-auto">
             <AnimateIn>
@@ -250,8 +239,10 @@ export default async function BersalinPage() {
             </AnimateStagger>
           </div>
         </section>
+        )}
 
-        {/* Products — Koleksi Legend */}
+        {/* Products — Koleksi Legend (hanya papar jika admin pilih) */}
+        {legendProducts.length > 0 && (
         <section className="px-6 py-16 bg-gradient-to-b from-transparent via-amber-950/5 to-transparent">
           <div className="max-w-5xl mx-auto">
             <AnimateIn>
@@ -283,6 +274,7 @@ export default async function BersalinPage() {
             </AnimateStagger>
           </div>
         </section>
+        )}
 
         {/* Quote */}
         <section className="px-6 py-16 max-w-3xl mx-auto text-center">

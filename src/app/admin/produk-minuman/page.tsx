@@ -16,47 +16,47 @@ type Product = {
   image_url?: string;
 };
 
-const HARUMAN_IDS_KEY = 'bersalin_produk_ids';
-const LEGEND_IDS_KEY = 'bersalin_produk_legend_ids';
+const HARUMAN_IDS_KEY = 'minuman_product_ids';
+const LEGEND_IDS_KEY = 'minuman_produk_legend_ids';
 
 const DEFAULTS: Record<string, string> = {
-  hero_badge: 'Panduan Ibu Berpantang',
-  hero_title: 'Penjagaan Wanita',
-  hero_title_highlight: 'Selepas Bersalin',
-  hero_desc: 'Petua tradisional Melayu dalam sentuhan moden — losyen pati halia semula jadi untuk ibu-ibu yang baru melahirkan dan sedang berpantang.',
-  intro_label: 'Losyen Pati Halia',
-  intro_title: 'Sangat Sinonim Untuk\nKegunaan Wanita Selepas Bersalin',
-  intro_p1: 'Losyen Mustajab Pati Halia Limau Nipis yang menggunakan ramuan utama pati limau nipis dan pati halia mempunyai pelbagai kegunaan hanya di dalam satu produk sahaja.',
-  intro_p2: 'Bauan aroma limau nipis dan halia yang sangat menyegarkan, ditambah pula dengan sedikit bauan \'mint\' dapat membantu menceriakan emosi ibu-ibu selepas bersalin yang biasanya lesu dan tidak bermaya.',
+  hero_badge: 'Produk Minuman',
+  hero_title: 'Cantik Luar',
+  hero_title_highlight: 'Cantik Dalam',
+  hero_desc: 'Tubuh badan kita sering terdedah kepada toksin dari persekitaran setiap hari. Mustajab Extra Daytox membantu proses detoksifikasi badan yang sihat dan berkesan.',
+  intro_label: 'Mustajab Extra Daytox',
+  intro_title: 'Detoks Untuk Badan\nLebih Sihat & Ringan',
+  intro_p1: 'Detoks adalah satu proses pembersihan usus dimana segala toksin, lemak serta lendir yang melekat pada dinding usus dikeluarkan melalui proses pembuangan air besar. Apabila usus bersih dari segala kotoran, barulah tubuh badan dapat menyerap segala nutrien pada tahap yang optimum.',
+  intro_p2: 'Pentingnya amalan detoks untuk penjagaan badan dan mengekalkan kesihatan. Dengan menambahkan makanan kesihatan tambahan dalam pelan detoks seharian, ia dapat membantu untuk proses detoksifikasi badan yang sihat dan berkesan.',
   tips_label: 'Khasiat & Kegunaan',
-  tips_title: 'Kebaikan Untuk Ibu Berpantang',
-  tip_1_icon: '🌿', tip_1_title: 'Menggantikan Param & Pilis', tip_1_desc: 'Losyen Mustajab Pati Halia Limau Nipis memudahkan ibu-ibu berpantang tanpa perlu sediakan param dan pilis secara tradisional.',
-  tip_2_icon: '💆‍♀️', tip_2_title: 'Urutan Lembut', tip_2_desc: 'Lakukan sedikit urutan menggunakan losyen untuk membantu pengaliran darah yang lebih lancar dan menghilangkan rasa kebas.',
-  tip_3_icon: '🩹', tip_3_title: 'Membuang Angin', tip_3_desc: 'Pati halia dan limau nipis membantu membuang angin dalam badan — masalah utama wanita selepas bersalin.',
-  tip_4_icon: '✨', tip_4_title: 'Mengempiskan Perut', tip_4_desc: 'Sesuai digunakan bersama bengkung untuk mendapatkan kesan optimum mengempiskan perut selepas bersalin.',
-  tip_5_icon: '🧘‍♀️', tip_5_title: 'Menyegarkan Badan', tip_5_desc: 'Aroma limau nipis dan halia yang menyegarkan membantu menceriakan emosi ibu-ibu yang lesu selepas bersalin.',
-  tip_6_icon: '🕐', tip_6_title: 'Jimat Masa', tip_6_desc: 'Tidak berminyak dan mudah menyerap — memudahkan ibu yang berpantang sendiri tanpa tukang urut.',
-  article_1_title: 'Petua Turun-Temurun, Kemudahan Moden', article_1_content: 'Sejak zaman nenek moyang, wanita Melayu mengamalkan petua berpantang menggunakan halia, limau nipis, dan rempah ratus semula jadi. Dunia Herbs menggabungkan kebijaksanaan tradisional ini dalam bentuk losyen moden yang mudah digunakan — tanpa perlu menumbuk param atau menyediakan pilis.',
-  article_2_title: 'Kenapa Pati Halia?', article_2_content: 'Halia dikenali sebagai "ratu herba" dalam perubatan tradisional Melayu. Ia membantu melancarkan peredaran darah, mengurangkan bengkak, membuang angin, dan memberikan kehangatan semula jadi pada badan. Losyen Mustajab menggunakan pati halia tulen 100% — bukan perisa atau bahan sintetik.',
-  article_3_title: 'Sesuai Untuk Semua Ibu', article_3_content: 'Sama ada bersalin normal atau pembedahan, losyen ini sesuai untuk semua ibu. Sapuan lembut pada perut, pinggang, dan anggota badan sudah memadai. Ditambah dengan pemakaian bengkung, hasilnya lebih berkesan. Sesuai juga untuk ibu yang berpantang sendiri tanpa bantuan tukang urut.',
+  tips_title: 'Kebaikan Mustajab Extra Daytox',
+  tip_1_icon: '🍽️', tip_1_title: 'Membantu Mengawal Selera Makan', tip_1_desc: 'Mengurangkan rasa lapar dan keinginan untuk mengambil makanan ringan. Badan terasa lebih ringan keesokan harinya.',
+  tip_2_icon: '🧹', tip_2_title: 'Menyingkirkan Bahan Toksik', tip_2_desc: 'Membantu proses detoksifikasi badan — membersihkan toksin, lemak dan lendir yang melekat pada dinding usus.',
+  tip_3_icon: '💚', tip_3_title: 'Membersihkan Kolon', tip_3_desc: 'Usus yang bersih membolehkan tubuh badan menyerap nutrien pada tahap yang optimum untuk kesihatan yang lebih baik.',
+  tip_4_icon: '🎯', tip_4_title: 'Sasaran Berat Badan Ideal', tip_4_desc: 'Membantu mencapai impian untuk mendapatkan bentuk badan yang cantik dan menarik. Mengatasi punca utama kenaikan berat badan.',
+  tip_5_icon: '🌙', tip_5_title: 'Mudah & Praktikal', tip_5_desc: 'Pengambilan 1 sachet setiap malam sebelum tidur akan memudahkan proses pembuangan. Badan terasa lebih ringan keesokan harinya.',
+  tip_6_icon: '✨', tip_6_title: 'Cantik Luar Cantik Dalam', tip_6_desc: 'Produk detoks yang diformulasi untuk penjagaan dalaman. Sesuai untuk rutin harian yang sihat.',
+  article_1_title: 'Apakah Detoks?', article_1_content: 'Detoks adalah satu proses pembersihan usus dimana segala toksin, lemak serta lendir yang melekat pada dinding usus dikeluarkan melalui proses pembuangan air besar. Jika terdedah dengan kerap dan berterusan kepada toksin persekitaran, ia akan melemahkan keupayaan sistem tubuh badan secara semulajadi untuk menyingkirkan toksin.',
+  article_2_title: 'Kenapa Perlu Detoks?', article_2_content: 'Faktor persekitaran dan pemakanan moden boleh menyebabkan pengumpulan toksin yang bakal membawa kepada pelbagai penyakit. Amalan detoks membantu mengekalkan kesihatan dan memastikan badan dapat berfungsi pada tahap optimum.',
+  article_3_title: 'Cara Penggunaan', article_3_content: 'Pengambilan 1 sachet Mustajab Extra Daytox setiap malam sebelum tidur akan memudahkan proses pembuangan. Badan akan terasa lebih ringan keesokan harinya. Kandungan: 15 sachet. Harga: SM RM49.00 / SS RM59.00.',
   gallery_label: 'Galeri',
-  gallery_title: 'Kegunaan & Cara Pakai',
+  gallery_title: 'Produk & Kegunaan',
   produk_label: 'Produk Disyorkan',
-  produk_title: 'Sesuai Untuk Ibu Berpantang',
-  produk_desc: 'Pilihan losyen yang lembut dan sesuai untuk kegunaan wanita selepas bersalin',
-  quote: 'Limau nipis biasa digunakan oleh wanita selepas bersalin semasa dalam pantang sebagai salah satu bahan untuk mengempiskan perut dan menyegarkan badan yang lesu.',
-  quote_author: '— Petua Tradisional Melayu',
-  cta_title: 'Mula Berpantang Dengan Cara Moden',
-  cta_desc: 'Hubungi kami untuk nasihat produk yang sesuai untuk anda. Kami sedia membantu.',
+  produk_title: 'Produk Minuman & Makanan',
+  produk_desc: 'Pilihan produk dalaman — detoks, minuman kesihatan dan makanan tambahan',
+  quote: 'Mustajab Extra Daytox akan membantu mencapai impian anda untuk mendapatkan bentuk badan yang cantik dan menarik kerana ianya dapat mengatasi masalah yang menjadi punca utama kenaikan berat badan.',
+  quote_author: '— Dunia Herbs',
+  cta_title: 'Dapatkan Produk Minuman Anda',
+  cta_desc: 'Hubungi kami untuk nasihat produk yang sesuai. Kami sedia membantu.',
 };
 
 const SECTIONS = [
   {
     label: 'Hero',
     keys: [
-      { id: 'hero_badge', hint: 'Badge atas. Cth: Panduan Ibu Berpantang' },
-      { id: 'hero_title', hint: 'Tajuk baris 1. Cth: Penjagaan Wanita' },
-      { id: 'hero_title_highlight', hint: 'Tajuk baris 2 (gold). Cth: Selepas Bersalin' },
+      { id: 'hero_badge', hint: 'Badge atas. Cth: Produk Minuman' },
+      { id: 'hero_title', hint: 'Tajuk baris 1. Cth: Cantik Luar' },
+      { id: 'hero_title_highlight', hint: 'Tajuk baris 2 (gold). Cth: Cantik Dalam' },
       { id: 'hero_desc', hint: 'Penerangan bawah tajuk', long: true },
     ],
   },
@@ -64,7 +64,7 @@ const SECTIONS = [
     label: 'Gambar & Pengenalan',
     keys: [
       { id: 'hero_image', hint: 'Gambar utama sebelah kiri artikel', image: true },
-      { id: 'intro_label', hint: 'Label kecil. Cth: Losyen Pati Halia' },
+      { id: 'intro_label', hint: 'Label kecil. Cth: Mustajab Extra Daytox' },
       { id: 'intro_title', hint: 'Tajuk pengenalan. Guna \\n untuk baris baru', long: true },
       { id: 'intro_p1', hint: 'Perenggan 1', long: true },
       { id: 'intro_p2', hint: 'Perenggan 2', long: true },
@@ -74,7 +74,7 @@ const SECTIONS = [
     label: 'Tips & Khasiat (6 kad)',
     keys: [
       { id: 'tips_label', hint: 'Label seksyen. Cth: Khasiat & Kegunaan' },
-      { id: 'tips_title', hint: 'Tajuk seksyen. Cth: Kebaikan Untuk Ibu Berpantang' },
+      { id: 'tips_title', hint: 'Tajuk seksyen. Cth: Kebaikan Mustajab Extra Daytox' },
       { id: 'tip_1_icon', hint: 'Emoji tip 1' }, { id: 'tip_1_title', hint: 'Tajuk tip 1' }, { id: 'tip_1_desc', hint: 'Keterangan tip 1', long: true },
       { id: 'tip_2_icon', hint: 'Emoji tip 2' }, { id: 'tip_2_title', hint: 'Tajuk tip 2' }, { id: 'tip_2_desc', hint: 'Keterangan tip 2', long: true },
       { id: 'tip_3_icon', hint: 'Emoji tip 3' }, { id: 'tip_3_title', hint: 'Tajuk tip 3' }, { id: 'tip_3_desc', hint: 'Keterangan tip 3', long: true },
@@ -95,7 +95,7 @@ const SECTIONS = [
     label: 'Galeri (3 gambar)',
     keys: [
       { id: 'gallery_label', hint: 'Label seksyen. Cth: Galeri' },
-      { id: 'gallery_title', hint: 'Tajuk seksyen. Cth: Kegunaan & Cara Pakai' },
+      { id: 'gallery_title', hint: 'Tajuk seksyen. Cth: Produk & Kegunaan' },
       { id: 'gallery_1', hint: 'Gambar 1', image: true },
       { id: 'gallery_2', hint: 'Gambar 2', image: true },
       { id: 'gallery_3', hint: 'Gambar 3', image: true },
@@ -105,25 +105,25 @@ const SECTIONS = [
     label: 'Teks Seksyen Produk',
     keys: [
       { id: 'produk_label', hint: 'Label. Cth: Produk Disyorkan' },
-      { id: 'produk_title', hint: 'Tajuk. Cth: Sesuai Untuk Ibu Berpantang' },
+      { id: 'produk_title', hint: 'Tajuk. Cth: Produk Minuman & Makanan' },
       { id: 'produk_desc', hint: 'Penerangan ringkas', long: true },
     ],
   },
   {
     label: 'Quote & CTA',
     keys: [
-      { id: 'quote', hint: 'Quote/petua tradisional', long: true },
-      { id: 'quote_author', hint: 'Sumber quote. Cth: — Petua Tradisional Melayu' },
-      { id: 'cta_title', hint: 'Tajuk CTA. Cth: Mula Berpantang Dengan Cara Moden' },
+      { id: 'quote', hint: 'Quote', long: true },
+      { id: 'quote_author', hint: 'Sumber quote. Cth: — Dunia Herbs' },
+      { id: 'cta_title', hint: 'Tajuk CTA. Cth: Dapatkan Produk Minuman Anda' },
       { id: 'cta_desc', hint: 'Penerangan CTA', long: true },
     ],
   },
 ];
 
-const SECTION_KEYS = SECTIONS.flatMap((s) => s.keys.map((k) => `bersalin_${k.id}`));
+const SECTION_KEYS = SECTIONS.flatMap((s) => s.keys.map((k) => `minuman_${k.id}`));
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=100&h=100&fit=crop';
 
-export default function AdminBersalinPage() {
+export default function AdminProdukMinumanPage() {
   const [content, setContent] = useState<Record<string, string>>({});
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [harumanIds, setHarumanIds] = useState<string[]>([]);
@@ -213,11 +213,11 @@ export default function AdminBersalinPage() {
     <AdminShell>
       <div className="flex items-center justify-between mb-2">
         <div>
-          <h1 className="font-serif text-2xl font-bold text-stone-100">Selepas Bersalin</h1>
-          <p className="text-stone-500 text-xs mt-1">Semua teks, gambar, produk & content untuk halaman /bersalin</p>
+          <h1 className="font-serif text-2xl font-bold text-stone-100">Produk Minuman</h1>
+          <p className="text-stone-500 text-xs mt-1">Semua teks, gambar, produk & content untuk halaman /produk-minuman (Mustajab Extra Daytox)</p>
         </div>
         <div className="flex items-center gap-2">
-          <a href="/bersalin" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 rounded-xl border border-stone-700 px-3 py-2 text-xs text-stone-400 hover:text-herb-gold hover:border-herb-gold/50 transition">
+          <a href="/produk-minuman" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 rounded-xl border border-stone-700 px-3 py-2 text-xs text-stone-400 hover:text-herb-gold hover:border-herb-gold/50 transition">
             <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
             Preview
           </a>
@@ -226,7 +226,7 @@ export default function AdminBersalinPage() {
               onClick={() => {
                 const empty = SECTION_KEYS.filter((k) => !content[k]);
                 empty.forEach((k) => {
-                  const shortKey = k.replace('bersalin_', '');
+                  const shortKey = k.replace('minuman_', '');
                   if (DEFAULTS[shortKey]) updateKey(k, DEFAULTS[shortKey]);
                 });
               }}
@@ -247,7 +247,7 @@ export default function AdminBersalinPage() {
             <h3 className="text-stone-200 text-sm font-semibold mb-4 pb-2 border-b border-stone-800">{section.label}</h3>
             <div className="space-y-4">
               {section.keys.map((field) => {
-                const fullKey = `bersalin_${field.id}`;
+                const fullKey = `minuman_${field.id}`;
                 const isImage = 'image' in field && field.image;
                 const isLong = 'long' in field && field.long;
                 const defaultVal = DEFAULTS[field.id] ?? '';
@@ -259,7 +259,7 @@ export default function AdminBersalinPage() {
                       <label className="block text-xs text-stone-400 mb-1">{field.hint}</label>
                       <FileUpload
                         accept="image/*"
-                        folder="bersalin"
+                        folder="minuman"
                         preview={content[fullKey] || undefined}
                         label={field.hint}
                         onUpload={(url) => { updateKey(fullKey, url); saveKey(fullKey, url); }}
