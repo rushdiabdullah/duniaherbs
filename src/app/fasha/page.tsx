@@ -2,8 +2,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { AnimateIn, AnimateStagger, AnimateStaggerItem } from '@/components/AnimateIn';
+import { ProductCard } from '@/components/ProductCard';
 import { VideoGallery } from '@/components/VideoGallery';
-import { getFashaLandingContent, getSiteContent } from '@/lib/data';
+import { getFashaLandingContent, getSiteContent, getActivePromotions } from '@/lib/data';
+import { applyPromoToProducts } from '@/lib/promotions';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,11 +21,20 @@ export const metadata = {
 };
 
 export default async function FashaLandingPage() {
-  const [data, content] = await Promise.all([getFashaLandingContent(), getSiteContent()]);
+  const [data, content, promotions] = await Promise.all([getFashaLandingContent(), getSiteContent(), getActivePromotions()]);
 
   if (!data.visible) {
     redirect('/');
   }
+
+  const picksWithPromo = applyPromoToProducts(
+    data.picks.map((p) => ({ id: p.id, name: p.name, price: (p as { price?: string }).price || '' })),
+    promotions
+  );
+  const picksDisplay = data.picks.map((p) => {
+    const promo = picksWithPromo.find((x) => x.id === p.id);
+    return { ...p, price: promo?.price ?? (p as { price?: string }).price ?? '', originalPrice: promo?.originalPrice, discountLabel: promo?.discountLabel };
+  });
 
   const CONTACT_EMAIL = 'admin@duniaherbs.com.my';
   const EMAIL_LINK = `mailto:${CONTACT_EMAIL}`;
@@ -127,29 +138,21 @@ export default async function FashaLandingPage() {
           </p>
         </AnimateIn>
         <AnimateStagger className="grid sm:grid-cols-3 gap-8 mt-16">
-          {data.picks.map((p) => (
+          {picksDisplay.map((p) => (
             <AnimateStaggerItem key={p.id}>
-              <a
-                href={EMAIL_LINK}
-                className="group block rounded-2xl border border-amber-500/15 bg-stone-950/60 p-6 backdrop-blur-sm transition hover:border-amber-500/40 hover:bg-stone-950/80"
-              >
-                <div className="aspect-square rounded-xl overflow-hidden bg-stone-900 mb-5">
-                  <Image
-                    src={p.image_url || PRODUCT_IMAGE_FALLBACK}
-                    alt={p.name}
-                    width={400}
-                    height={400}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <span className="text-[10px] uppercase tracking-widest text-amber-400/80">{p.heat || 'Mild'}</span>
-                <h3 className="font-semibold text-stone-100 mt-2 group-hover:text-amber-200 transition">{p.name}</h3>
-                <p className="text-sm text-stone-500 mt-1">{p.tagline}</p>
-                <p className="mt-4 font-semibold text-amber-400">{p.price}</p>
-                <span className="inline-block mt-3 text-xs text-amber-500/70 group-hover:text-amber-400 transition">
-                  Hubungi via Email →
-                </span>
-              </a>
+              <ProductCard
+                product={{
+                  id: p.id,
+                  name: p.name,
+                  tagline: p.tagline,
+                  price: p.price,
+                  badge: p.badge,
+                  heat: p.heat,
+                  image_url: p.image_url,
+                  originalPrice: p.originalPrice,
+                  discountLabel: p.discountLabel,
+                }}
+              />
             </AnimateStaggerItem>
           ))}
         </AnimateStagger>
@@ -184,18 +187,18 @@ export default async function FashaLandingPage() {
               {data.ctaTitle}
             </h2>
             <p className="text-stone-400 mb-12 text-lg">
-              {data.ctaSubtitle}
+              Order sekarang melalui website rasmi syarikat atau stokis dan pengedar yang sah.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <a
-                href={EMAIL_LINK}
+              <Link
+                href={picksDisplay.length > 0 ? `/produk/${picksDisplay[picksDisplay.length - 1].id}` : '#fasha-pick'}
                 className="inline-flex items-center gap-2 rounded-full bg-amber-500/90 px-8 py-4 text-sm font-semibold text-stone-900 transition hover:bg-amber-400"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                Email Kami
-              </a>
+                Beli Sekarang
+              </Link>
               <a
                 href="https://shopee.com.my/search?keyword=dunia%20herbs%20losyen%20mustajab"
                 target="_blank"
