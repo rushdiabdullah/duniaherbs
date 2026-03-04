@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimateIn, AnimateStagger, AnimateStaggerItem } from '@/components/AnimateIn';
-import { getProducts, getSiteContent } from '@/lib/data';
-import { getHeatLabel } from '@/lib/heat';
+import { ProductCard } from '@/components/ProductCard';
+import { getProducts, getSiteContent, getActivePromotions } from '@/lib/data';
+import { applyPromoToProducts } from '@/lib/promotions';
 
 export const dynamic = 'force-dynamic';
 
@@ -53,9 +54,7 @@ function c(content: Record<string, string>, key: string) {
 const PRODUCT_IMAGE_FALLBACK = 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=400&h=400&fit=crop';
 
 export default async function BersalinPage() {
-  const [products, content] = await Promise.all([getProducts(), getSiteContent()]);
-  const CONTACT_EMAIL = 'admin@duniaherbs.com.my';
-  const EMAIL_LINK = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Pertanyaan produk untuk selepas bersalin')}`;
+  const [products, content, promotions] = await Promise.all([getProducts(), getSiteContent(), getActivePromotions()]);
 
   const byId = new Map(products.map((p) => [p.id, p]));
   const sortByOrder = <T extends { sort_order?: number }>(arr: T[]) =>
@@ -64,8 +63,10 @@ export default async function BersalinPage() {
   // Koleksi Haruman & Legend — hanya papar produk yang admin pilih di Admin Bersalin. Tiada fallback.
   const harumanIds = (content.bersalin_produk_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
   const legendIds = (content.bersalin_produk_legend_ids || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const harumanProducts = harumanIds.length > 0 ? sortByOrder(harumanIds.map((id) => byId.get(id)).filter(Boolean) as typeof products) : [];
-  const legendProducts = legendIds.length > 0 ? sortByOrder(legendIds.map((id) => byId.get(id)).filter(Boolean) as typeof products) : [];
+  const harumanRaw = harumanIds.length > 0 ? sortByOrder(harumanIds.map((id) => byId.get(id)).filter(Boolean) as typeof products) : [];
+  const legendRaw = legendIds.length > 0 ? sortByOrder(legendIds.map((id) => byId.get(id)).filter(Boolean) as typeof products) : [];
+  const harumanProducts = applyPromoToProducts(harumanRaw, promotions);
+  const legendProducts = applyPromoToProducts(legendRaw, promotions);
 
   const tips = [1, 2, 3, 4, 5, 6].map((i) => ({
     icon: c(content, `tip_${i}_icon`),
@@ -108,10 +109,10 @@ export default async function BersalinPage() {
             </AnimateIn>
             <AnimateIn delay={0.3}>
               <div className="mt-8 flex flex-wrap justify-center gap-4">
-                <a href={EMAIL_LINK} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-700 to-amber-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-amber-900/30 transition hover:from-amber-600 hover:to-amber-500">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                  Email Kami
-                </a>
+                <Link href="/fasha" className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-700 to-amber-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-amber-900/30 transition hover:from-amber-600 hover:to-amber-500">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  Fasha Sandha
+                </Link>
                 <Link href="/#produk" className="inline-flex items-center gap-2 rounded-xl border border-amber-600/40 px-6 py-3.5 text-sm font-semibold text-amber-300 transition hover:bg-amber-900/20 hover:border-amber-500/50">
                   Lihat Semua Produk
                 </Link>
@@ -218,22 +219,7 @@ export default async function BersalinPage() {
             <AnimateStagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {harumanProducts.map((product) => (
                 <AnimateStaggerItem key={product.id}>
-                  <Link href={`/produk/${product.id}`} className="group block">
-                    <div className="rounded-2xl border border-amber-800/15 bg-gradient-to-br from-stone-900/80 to-stone-950/60 overflow-hidden transition hover:border-amber-600/30 hover:shadow-lg hover:shadow-amber-950/20">
-                      <div className="relative aspect-square bg-stone-950">
-                        <Image src={product.image_url || PRODUCT_IMAGE_FALLBACK} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 100vw, 33vw" />
-                        {product.badge && (<span className="absolute top-3 left-3 rounded-full bg-amber-700/90 px-3 py-1 text-[10px] font-medium text-white backdrop-blur-sm">{product.badge}</span>)}
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-serif text-stone-100 font-semibold group-hover:text-amber-300 transition">{product.name}</h3>
-                        {product.tagline && <p className="text-stone-500 text-xs mt-1">{product.tagline}</p>}
-                        <div className="flex items-center justify-between mt-3">
-                          <span className="text-amber-400 font-semibold text-sm">{product.price}</span>
-                          {product.heat && <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-900/20 text-amber-400/70 border border-amber-800/20">{getHeatLabel(product.heat)}</span>}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
+                  <ProductCard product={product} />
                 </AnimateStaggerItem>
               ))}
             </AnimateStagger>
@@ -253,22 +239,7 @@ export default async function BersalinPage() {
             <AnimateStagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {legendProducts.map((product) => (
                 <AnimateStaggerItem key={product.id}>
-                  <Link href={`/produk/${product.id}`} className="group block">
-                    <div className="rounded-2xl border border-amber-800/15 bg-gradient-to-br from-stone-900/80 to-stone-950/60 overflow-hidden transition hover:border-amber-600/30 hover:shadow-lg hover:shadow-amber-950/20">
-                      <div className="relative aspect-square bg-stone-950">
-                        <Image src={product.image_url || PRODUCT_IMAGE_FALLBACK} alt={product.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 100vw, 33vw" />
-                        {product.badge && (<span className="absolute top-3 left-3 rounded-full bg-amber-700/90 px-3 py-1 text-[10px] font-medium text-white backdrop-blur-sm">{product.badge}</span>)}
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-serif text-stone-100 font-semibold group-hover:text-amber-300 transition">{product.name}</h3>
-                        {product.tagline && <p className="text-stone-500 text-xs mt-1">{product.tagline}</p>}
-                        <div className="flex items-center justify-between mt-3">
-                          <span className="text-amber-400 font-semibold text-sm">{product.price}</span>
-                          {product.heat && <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-900/20 text-amber-400/70 border border-amber-800/20">{getHeatLabel(product.heat)}</span>}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
+                  <ProductCard product={product} />
                 </AnimateStaggerItem>
               ))}
             </AnimateStagger>
@@ -292,10 +263,10 @@ export default async function BersalinPage() {
           <AnimateIn>
             <h2 className="font-serif text-2xl md:text-3xl font-bold text-stone-100 mb-4">{c(content, 'cta_title')}</h2>
             <p className="text-stone-400 mb-8 max-w-lg mx-auto">{c(content, 'cta_desc')}</p>
-            <a href={EMAIL_LINK} className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-700 to-amber-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-amber-900/30 transition hover:from-amber-600 hover:to-amber-500">
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-              Email Kami
-            </a>
+            <Link href="/fasha" className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-700 to-amber-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-amber-900/30 transition hover:from-amber-600 hover:to-amber-500">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Fasha Sandha
+            </Link>
           </AnimateIn>
         </section>
 

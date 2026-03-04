@@ -123,7 +123,7 @@ export default function AdminFaqPage() {
         <div className="flex items-center justify-between mb-2">
           <div>
             <h1 className="font-serif text-2xl font-bold text-stone-100">FAQ</h1>
-            <p className="text-stone-500 text-xs mt-1">Soalan lazim yang dipaparkan di halaman /faq dan preview 3 soalan di homepage bawah</p>
+            <p className="text-stone-500 text-xs mt-1">Soalan lazim — urutan & visibiliti menentukan paparan di laman awam</p>
           </div>
           <div className="flex items-center gap-2">
           <a href="/faq" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 rounded-xl border border-stone-700 px-3 py-2 text-xs text-stone-400 hover:text-herb-gold hover:border-herb-gold/50 transition">
@@ -137,6 +137,17 @@ export default function AdminFaqPage() {
             Tambah FAQ
           </button>
           </div>
+        </div>
+
+        <div className="rounded-xl border border-herb-gold/20 bg-herb-gold/5 p-4 text-sm">
+          <h3 className="font-medium text-herb-gold mb-2">Panduan paparan FAQ</h3>
+          <ul className="space-y-1.5 text-stone-400">
+            <li><strong className="text-stone-300">Halaman /faq:</strong> Semua FAQ dengan &quot;Tampil&quot; dipaparkan mengikut urutan</li>
+            <li><strong className="text-stone-300">Homepage (preview):</strong> 3 FAQ teratas (yang tampil) dipaparkan di bahagian bawah</li>
+            <li><strong className="text-stone-300">Sembunyi:</strong> FAQ yang disembunyikan tidak muncul di mana-mana laman awam</li>
+            <li><strong className="text-stone-300">Urutan:</strong> Nombor lebih kecil = muncul dahulu. Edit urutan untuk susun semula</li>
+            <li><strong className="text-stone-300">Tajuk & pautan:</strong> &quot;Soalan lazim&quot;, &quot;Lihat semua FAQ&quot; dll. diset di Admin → Content</li>
+          </ul>
         </div>
 
         {loading ? (
