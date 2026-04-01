@@ -72,8 +72,8 @@ export default function AdminProdukPage() {
       supabase.from('site_content').select('value').eq('id', 'produk_ids').single(),
       supabase.from('site_content').select('value').eq('id', 'produk_legend_ids').single(),
     ]);
-    setHarumanIds((haruman.data?.value || '').split(',').map((s) => s.trim()).filter(Boolean));
-    setLegendIds((legend.data?.value || '').split(',').map((s) => s.trim()).filter(Boolean));
+    setHarumanIds(String(haruman.data?.value ?? '').split(',').map((s: string) => s.trim()).filter(Boolean));
+    setLegendIds(String(legend.data?.value ?? '').split(',').map((s: string) => s.trim()).filter(Boolean));
   }
 
   async function toggleHaruman(productId: string) {
@@ -180,7 +180,26 @@ export default function AdminProdukPage() {
           return;
         }
         setProducts((prev) =>
-          prev.map((p) => (p.id === editing.id ? { ...p, ...payload } : p)),
+          prev.map((p) =>
+            p.id !== editing.id
+              ? p
+              : {
+                  ...p,
+                  name: payload.name,
+                  tagline: payload.tagline,
+                  price: payload.price,
+                  badge: payload.badge ?? undefined,
+                  heat: payload.heat,
+                  size: payload.size,
+                  description: payload.description,
+                  benefits: payload.benefits,
+                  usage_info: payload.usage_info,
+                  image_url: payload.image_url ?? '',
+                  packaging_color: payload.packaging_color ?? undefined,
+                  sort_order: payload.sort_order,
+                  visible: payload.visible,
+                },
+          ),
         );
       } else {
         const { data: inserted, error: err } = await supabase

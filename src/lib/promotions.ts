@@ -7,7 +7,7 @@ export type Promotion = {
   name: string;
   discount_type: 'percentage' | 'fixed_amount';
   discount_value: number;
-  applies_to: 'all' | 'single' | 'group';
+  applies_to: 'all' | 'single' | 'group' | 'products';
   product_ids: string | null;
   group_key: string | null;
   start_date: string | null;
@@ -66,4 +66,26 @@ export function applyPromotion(
 /** Format price for display (RM X.XX) */
 export function formatPrice(num: number): string {
   return `RM ${num.toFixed(2)}`;
+}
+
+/** Apply promotions to an array of products. Returns products with price, originalPrice, discountLabel. */
+export function applyPromoToProducts<T extends { id: string; price: string }>(
+  arr: T[],
+  promotions: Promotion[]
+): (T & { price: string; originalPrice?: string; discountLabel?: string })[] {
+  return arr.map((p) => {
+    const priceNum = parseFloat((p.price || '0').replace(/[^0-9.]/g, ''));
+    const { finalPrice, appliedPromo } = applyPromotion(priceNum, p.id, promotions);
+    const hasDiscount = appliedPromo && finalPrice < priceNum;
+    return {
+      ...p,
+      price: hasDiscount ? formatPrice(finalPrice) : p.price,
+      originalPrice: hasDiscount ? p.price : undefined,
+      discountLabel: hasDiscount
+        ? appliedPromo!.discount_type === 'percentage'
+          ? `${appliedPromo!.discount_value}% off`
+          : `RM ${appliedPromo!.discount_value} off`
+        : undefined,
+    };
+  });
 }

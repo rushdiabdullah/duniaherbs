@@ -10,7 +10,7 @@ import { TestimonialSlider } from '@/components/TestimonialSlider';
 import { VideoShowcase } from '@/components/VideoShowcase';
 import { VideoGallery } from '@/components/VideoGallery';
 import { getProducts, getSiteContent, getMilestones, getFaqs, getActivePromotions } from '@/lib/data';
-import { applyPromotion, formatPrice } from '@/lib/promotions';
+import { applyPromoToProducts } from '@/lib/promotions';
 
 export const dynamic = 'force-dynamic';
 
@@ -75,26 +75,8 @@ export default async function HomePage() {
       ? sortByOrder(legendIds.map((id) => byId.get(id)).filter(Boolean) as typeof products)
       : mildOrBadge.length > 0 ? mildOrBadge : sortByOrder(products).slice(0, 4);
 
-  // Apply promotions to product prices for display
-  const applyPromoToProducts = <T extends { id: string; price: string }>(arr: T[]) =>
-    arr.map((p) => {
-      const priceNum = parseFloat((p.price || '0').replace(/[^0-9.]/g, ''));
-      const { finalPrice, appliedPromo } = applyPromotion(priceNum, p.id, promotions);
-      const hasDiscount = appliedPromo && finalPrice < priceNum;
-      return {
-        ...p,
-        price: hasDiscount ? formatPrice(finalPrice) : p.price,
-        originalPrice: hasDiscount ? p.price : undefined,
-        discountLabel: hasDiscount
-          ? appliedPromo!.discount_type === 'percentage'
-            ? `${appliedPromo!.discount_value}% off`
-            : `RM ${appliedPromo!.discount_value} off`
-          : undefined,
-      };
-    });
-
-  const harumanProducts = applyPromoToProducts(harumanRaw);
-  const legendProducts = applyPromoToProducts(legendRaw);
+  const harumanProducts = applyPromoToProducts(harumanRaw, promotions);
+  const legendProducts = applyPromoToProducts(legendRaw, promotions);
 
   const CONTACT_EMAIL = 'admin@duniaherbs.com.my';
   const EMAIL_LINK = `mailto:${CONTACT_EMAIL}`;

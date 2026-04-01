@@ -292,7 +292,9 @@ export default function AdminContentPage() {
   async function handleSave() {
     setSaving(true);
     const supabase = getSupabaseBrowser();
-    const allKeys = new Set([...Object.keys(content), ...Object.keys(DEFAULT_VALUES)]);
+    const allKeys = Array.from(
+      new Set([...Object.keys(content), ...Object.keys(DEFAULT_VALUES)])
+    );
     for (const key of allKeys) {
       const val = content[key] ?? DEFAULT_VALUES[key] ?? '';
       const { error } = await supabase

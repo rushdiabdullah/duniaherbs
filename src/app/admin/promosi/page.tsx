@@ -7,6 +7,18 @@ import type { Promotion } from '@/lib/promotions';
 
 type Product = { id: string; name: string; price?: string };
 
+type PromosiForm = {
+  name: string;
+  discount_type: 'percentage' | 'fixed_amount';
+  discount_value: number;
+  applies_to: 'all' | 'single' | 'group';
+  product_ids: string;
+  group_key: string;
+  start_date: string;
+  end_date: string;
+  is_active: boolean;
+};
+
 const GROUP_OPTIONS: { value: string; label: string }[] = [
   { value: 'haruman', label: 'Koleksi Haruman (Homepage)' },
   { value: 'legend', label: 'Koleksi Legend (Homepage)' },
@@ -16,11 +28,11 @@ const GROUP_OPTIONS: { value: string; label: string }[] = [
   { value: 'seisi_keluarga', label: 'Seisi Keluarga' },
 ];
 
-const emptyForm = {
+const emptyForm: PromosiForm = {
   name: '',
-  discount_type: 'percentage' as const,
+  discount_type: 'percentage',
   discount_value: 10,
-  applies_to: 'all' as const,
+  applies_to: 'all',
   product_ids: '',
   group_key: '',
   start_date: '',
@@ -34,7 +46,7 @@ export default function AdminPromosiPage() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Promotion | null>(null);
-  const [form, setForm] = useState(emptyForm);
+  const [form, setForm] = useState<PromosiForm>(emptyForm);
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
 
