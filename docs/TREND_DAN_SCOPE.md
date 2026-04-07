@@ -52,7 +52,7 @@
 | Detail produk | Gambar, deskripsi, harga, add to cart, related |
 | Cart | Item, quantity, subtotal, link ke checkout |
 | Checkout | Alamat, pilih payment → payment gateway |
-| Payment gateway | **Billplz** (create bill → redirect → callback) |
+| Payment gateway | **ToyyibPay** (create bill → redirect → callback) |
 | Admin (optional) | Login, CRUD produk, order list |
 | Auth (optional) | Login/register untuk simpan alamat & order history |
 
@@ -64,7 +64,7 @@
 - **Styling:** Tailwind CSS (cepat + dark mode built-in)
 - **State:** React context / Zustand untuk cart
 - **Backend/DB:** Supabase (auth, products, orders) atau Firebase
-- **Payment:** Billplz (API: create bill → redirect user → callback; sandbox: billplz-sandbox.com)
+- **Payment:** ToyyibPay (API: create bill → redirect user → callback; sandbox: dev.toyyibpay.com)
 - **PWA:** next-pwa atau @ducanh2912/next-pwa (workbox)
 
 ---

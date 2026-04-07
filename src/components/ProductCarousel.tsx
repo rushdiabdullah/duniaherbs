@@ -115,6 +115,7 @@ export function ProductCarousel({ products }: { products: Product[] }) {
                         fill
                         className="object-cover"
                         sizes="280px"
+                        unoptimized={Boolean((product as Product & { image_url?: string }).image_url)}
                       />
                     </div>
                     {product.badge && (

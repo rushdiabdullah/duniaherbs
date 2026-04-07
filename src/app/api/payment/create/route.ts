@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { createBill } from '@/lib/billplz';
+import { createToyyibBill } from '@/lib/toyyibpay';
 import { getActivePromotions } from '@/lib/data';
 import { applyPromotion } from '@/lib/promotions';
 
@@ -20,6 +20,13 @@ function generateOrderNo() {
 
 export async function POST(req: NextRequest) {
   try {
+    if (!process.env.TOYYIBPAY_USER_SECRET_KEY?.trim() || !process.env.TOYYIBPAY_CATEGORY_CODE?.trim()) {
+      return NextResponse.json(
+        { error: 'ToyyibPay belum lengkap: isi TOYYIBPAY_CATEGORY_CODE (dan secret key) dalam .env.local' },
+        { status: 503 },
+      );
+    }
+
     const body = await req.json();
     const {
       productId, productName, price, quantity,
@@ -41,7 +48,6 @@ export async function POST(req: NextRequest) {
     if (isNaN(priceNum) || priceNum <= 0) {
       return NextResponse.json({ error: 'Harga tidak sah.' }, { status: 400 });
     }
-    // Recalculate with promotions if items provided (use service role to bypass RLS)
     const itemsList = Array.isArray(items) ? items : [];
     if (itemsList.length > 0) {
       const promotions = await getActivePromotions(supabase);
@@ -63,15 +69,15 @@ export async function POST(req: NextRequest) {
 
     const phone = customerPhone.startsWith('+6') ? customerPhone : `+6${customerPhone}`;
 
-    const { billId, billUrl } = await createBill({
+    const { billCode, paymentUrl } = await createToyyibBill({
       name: customerName,
       email: customerEmail || '',
       mobile: phone,
-      amount: amountCents,
+      amountCents,
       description: desc,
       callbackUrl: `${appUrl}/api/payment/callback`,
-      redirectUrl: `${appUrl}/payment/status`,
-      referenceNo: orderNo,
+      returnUrl: `${appUrl}/payment/status`,
+      orderReference: orderNo,
     });
 
     const fullAddress = [shippingAddress, shippingCity, shippingPostcode, shippingState].filter(Boolean).join(', ');
@@ -87,13 +93,13 @@ export async function POST(req: NextRequest) {
       customer_phone: customerPhone,
       shipping_address: fullAddress,
       items: items || null,
-      bill_code: billId,
+      bill_code: billCode,
       payment_status: 'pending',
     });
 
     return NextResponse.json({
-      billId,
-      paymentUrl: billUrl,
+      billId: billCode,
+      paymentUrl,
       orderNo,
     });
   } catch (err: unknown) {

@@ -12,12 +12,12 @@ type Video = {
 };
 
 const fallbackVideos: Video[] = [
-  { id: '1', title: 'Iklan 1', label: 'Iklan Dunia Herbs', video_url: '/IMG_0587.MP4' },
-  { id: '2', title: 'Iklan 2', label: 'Iklan Dunia Herbs', video_url: '/IMG_0596.MP4' },
-  { id: '3', title: 'Iklan 3', label: 'Iklan Dunia Herbs', video_url: '/IMG_0605.MP4' },
-  { id: '4', title: 'Iklan 4', label: 'Iklan Dunia Herbs', video_url: '/IMG_0611.MP4' },
-  { id: '5', title: 'Iklan 5', label: 'Iklan Dunia Herbs', video_url: '/IMG_0587.MP4' },
-  { id: '6', title: 'Iklan 6', label: 'Iklan Dunia Herbs', video_url: '/IMG_0596.MP4' },
+  { id: '1', title: 'Iklan 1', label: 'Iklan Dunia Herbs', video_url: '/videos/IMG_0587.MP4' },
+  { id: '2', title: 'Iklan 2', label: 'Iklan Dunia Herbs', video_url: '/videos/IMG_0596.MP4' },
+  { id: '3', title: 'Iklan 3', label: 'Iklan Dunia Herbs', video_url: '/videos/IMG_0605.MP4' },
+  { id: '4', title: 'Iklan 4', label: 'Iklan Dunia Herbs', video_url: '/videos/IMG_0611.MP4' },
+  { id: '5', title: 'Iklan 5', label: 'Iklan Dunia Herbs', video_url: '/videos/IMG_0587.MP4' },
+  { id: '6', title: 'Iklan 6', label: 'Iklan Dunia Herbs', video_url: '/videos/IMG_0596.MP4' },
 ];
 
 function VideoCard({ video, index }: { video: Video; index: number }) {
@@ -31,6 +31,7 @@ function VideoCard({ video, index }: { video: Video; index: number }) {
     const el = containerRef.current;
     const vid = videoRef.current;
     if (!el || !vid) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -39,7 +40,7 @@ function VideoCard({ video, index }: { video: Video; index: number }) {
           vid.pause();
         }
       },
-      { threshold: 0.3 },
+      { threshold: 0.15 },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -50,10 +51,8 @@ function VideoCard({ video, index }: { video: Video; index: number }) {
     if (!v) return;
     if (v.paused) {
       v.play().catch(() => {});
-      setPlaying(true);
     } else {
       v.pause();
-      setPlaying(false);
     }
   }
 
@@ -67,7 +66,6 @@ function VideoCard({ video, index }: { video: Video; index: number }) {
 
   return (
     <motion.div
-      ref={containerRef}
       initial={reduceMotion ? undefined : { opacity: 0, y: 20 }}
       whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
@@ -75,6 +73,7 @@ function VideoCard({ video, index }: { video: Video; index: number }) {
       className="group"
     >
       <div
+        ref={containerRef}
         className="relative aspect-video rounded-xl overflow-hidden border border-stone-700/50 bg-stone-950 cursor-pointer"
         onClick={togglePlay}
       >
@@ -83,9 +82,10 @@ function VideoCard({ video, index }: { video: Video; index: number }) {
           src={video.video_url}
           className="absolute inset-0 w-full h-full object-contain bg-black"
           playsInline
+          autoPlay
           loop
           muted
-          preload="metadata"
+          preload="auto"
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
         />

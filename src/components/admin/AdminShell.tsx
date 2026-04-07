@@ -22,7 +22,7 @@ const nav = [
   { label: 'Bentuk Badan', href: '/admin/bentuk-badan', preview: '/bentuk-badan', desc: 'Set Mini Sauna / bentuk badan ideal' },
   { label: 'Produk Minuman', href: '/admin/produk-minuman', preview: '/produk-minuman', desc: 'Mustajab Extra Daytox & produk minuman/makanan' },
   { label: 'Promosi', href: '/admin/promosi', desc: 'Kempen & diskaun — kesan harga produk & checkout' },
-  { label: 'Pesanan', href: '/admin/orders', desc: 'Pesanan & pembayaran Billplz' },
+  { label: 'Pesanan', href: '/admin/orders', desc: 'Pesanan & pembayaran ToyyibPay' },
   { label: 'Media', href: '/admin/media', desc: 'Upload gambar & video' },
   { label: 'Users', href: '/admin/users', desc: 'Pengguna admin' },
 ];

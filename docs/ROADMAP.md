@@ -45,7 +45,7 @@
 
 - [ ] **Cart** — tambah ke cart, quantity, subtotal.
 - [ ] **Checkout** — halaman checkout dengan alamat.
-- [ ] **Billplz integration** — create bill → redirect → callback.
+- [x] **ToyyibPay integration** — create bill → redirect → callback.
 - [ ] **Order tracking** — simpan order dalam Supabase, status update.
 - [ ] **Customer database** — simpan data pelanggan & sejarah pembelian.
 
@@ -70,7 +70,7 @@
 | Storage | Supabase Storage |
 | Auth | Supabase Auth |
 | ChatBot | OpenAI + Vercel AI SDK |
-| Payment | Billplz (Phase 4) |
+| Payment | ToyyibPay |
 | Deploy | Vercel (Phase 1) |
 | Domain | duniaherbs.com.my |
 

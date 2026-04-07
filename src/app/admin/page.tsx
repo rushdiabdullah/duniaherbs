@@ -19,7 +19,7 @@ const sections = [
   { label: 'Bentuk Badan', href: '/admin/bentuk-badan', desc: 'Halaman /bentuk-badan — Set Mini Sauna Legend', preview: '/bentuk-badan', icon: '💪' },
   { label: 'Produk Minuman', href: '/admin/produk-minuman', desc: 'Halaman /produk-minuman — Mustajab Extra Daytox & produk minuman', preview: '/produk-minuman', icon: '🥤' },
   { label: 'Promosi', href: '/admin/promosi', desc: 'Kempen & diskaun — kesan harga produk & checkout', icon: '🏷️' },
-  { label: 'Pesanan', href: '/admin/orders', desc: 'Lihat semua pesanan & status pembayaran Billplz', icon: '🧾' },
+  { label: 'Pesanan', href: '/admin/orders', desc: 'Lihat semua pesanan & status pembayaran ToyyibPay', icon: '🧾' },
   { label: 'Media', href: '/admin/media', desc: 'Upload & urus gambar/video — drag & drop', icon: '🖼️' },
   { label: 'Users', href: '/admin/users', desc: 'Pengguna admin dashboard', icon: '👥' },
 ];

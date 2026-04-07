@@ -12,13 +12,13 @@ type Video = {
 };
 
 const fallbackVideos: Video[] = [
-  { id: '1', title: 'Duta 1', label: 'Duta Dunia Herbs', video_url: '/IMG_0587.MP4' },
-  { id: '2', title: 'Duta 2', label: 'Duta Dunia Herbs', video_url: '/IMG_0596.MP4' },
-  { id: '3', title: 'Duta 3', label: 'Duta Dunia Herbs', video_url: '/IMG_0605.MP4' },
-  { id: '4', title: 'Duta 4', label: 'Duta Dunia Herbs', video_url: '/IMG_0611.MP4' },
-  { id: '5', title: 'Duta 5', label: 'Duta Dunia Herbs', video_url: '/IMG_0587.MP4' },
-  { id: '6', title: 'Duta 6', label: 'Duta Dunia Herbs', video_url: '/IMG_0596.MP4' },
-  { id: '7', title: 'Duta 7', label: 'Duta Dunia Herbs', video_url: '/IMG_0611.MP4' },
+  { id: '1', title: 'Duta 1', label: 'Duta Dunia Herbs', video_url: '/videos/IMG_0587.MP4' },
+  { id: '2', title: 'Duta 2', label: 'Duta Dunia Herbs', video_url: '/videos/IMG_0596.MP4' },
+  { id: '3', title: 'Duta 3', label: 'Duta Dunia Herbs', video_url: '/videos/IMG_0605.MP4' },
+  { id: '4', title: 'Duta 4', label: 'Duta Dunia Herbs', video_url: '/videos/IMG_0611.MP4' },
+  { id: '5', title: 'Duta 5', label: 'Duta Dunia Herbs', video_url: '/videos/IMG_0587.MP4' },
+  { id: '6', title: 'Duta 6', label: 'Duta Dunia Herbs', video_url: '/videos/IMG_0596.MP4' },
+  { id: '7', title: 'Duta 7', label: 'Duta Dunia Herbs', video_url: '/videos/IMG_0611.MP4' },
 ];
 
 const MAX_VIDEOS = 6;
@@ -42,12 +42,16 @@ function GalleryCard({ video, index, sizeClass }: { video: Video; index: number;
     const el = containerRef.current;
     const vid = videoRef.current;
     if (!el || !vid) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) vid.play().catch(() => {});
-        else vid.pause();
+        if (entry.isIntersecting) {
+          vid.play().catch(() => {});
+        } else {
+          vid.pause();
+        }
       },
-      { threshold: 0.3 },
+      { threshold: 0.15 },
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -67,9 +71,10 @@ function GalleryCard({ video, index, sizeClass }: { video: Video; index: number;
         src={video.video_url}
         className="absolute inset-0 w-full h-full object-cover"
         playsInline
+        autoPlay
         loop
         muted
-        preload="metadata"
+        preload="auto"
       />
       <button
         onClick={() => {

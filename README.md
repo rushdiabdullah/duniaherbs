@@ -1,6 +1,6 @@
 # DuniaHerb PWA
 
-PWA bisnes herbs — kategori **Beauty & Health**. Dark mode, Billplz.
+PWA bisnes herbs — kategori **Beauty & Health**. Dark mode, ToyyibPay.
 
 ## Setup
 
@@ -14,7 +14,7 @@ Buka [http://localhost:3000](http://localhost:3000).
 
 ## Doc
 
-- [Trend & scope + Billplz](docs/TREND_DAN_SCOPE.md)
+- [Trend & scope + pembayaran](docs/TREND_DAN_SCOPE.md)
 
 ## PWA
 
@@ -23,4 +23,4 @@ Buka [http://localhost:3000](http://localhost:3000).
 
 ## Payment
 
-Billplz: create bill → redirect user → callback. Sandbox: [billplz-sandbox.com](https://www.billplz-sandbox.com).
+ToyyibPay: create bill → redirect user → callback. Sandbox: [dev.toyyibpay.com](https://dev.toyyibpay.com/). Set `TOYYIBPAY_*` dalam `.env` (lihat `.env.example`).

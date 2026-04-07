@@ -132,7 +132,7 @@ export default function OrderForm({ productId, productName, price }: Props) {
           <span>•</span>
           <span>DuitNow QR</span>
         </div>
-        <p className="text-center text-stone-600 text-[10px] mt-1">Pembayaran selamat melalui Billplz</p>
+        <p className="text-center text-stone-600 text-[10px] mt-1">Pembayaran selamat melalui ToyyibPay</p>
       </form>
     </div>
   );

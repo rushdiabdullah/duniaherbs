@@ -7,6 +7,7 @@ import { Suspense } from 'react';
 function PaymentContent() {
   const params = useSearchParams();
 
+  // ToyyibPay return URL: status_id, billcode, order_id (GET). Legacy Billplz: billplz[paid], billplz[id]
   const billplzPaid = params.get('billplz[paid]');
   const statusId = params.get('status_id');
 

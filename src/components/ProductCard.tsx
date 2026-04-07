@@ -38,6 +38,7 @@ export function ProductCard({ product }: { product: ProductCardProduct }) {
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 33vw"
+              unoptimized={Boolean(product.image_url)}
             />
           </div>
           {product.badge && (

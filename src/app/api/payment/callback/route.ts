@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { verifyXSignature } from '@/lib/billplz';
+import { verifyToyyibCallback } from '@/lib/toyyibpay';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,39 +13,39 @@ export async function POST(req: NextRequest) {
     const params: Record<string, string> = {};
     formData.forEach((value, key) => { params[key] = String(value); });
 
-    const billId = params.id;
-    const paid = params.paid === 'true';
-    const state = params.state;
-    const xSignature = params.x_signature;
-    const orderNo = params.reference_1;
+    const refno = params.refno ?? '';
+    const status = params.status ?? '';
+    const orderNo = params.order_id ?? '';
+    const billcode = params.billcode ?? '';
+    const receivedHash = params.hash ?? '';
 
-    console.log('Billplz callback:', { billId, paid, state, orderNo });
+    console.log('ToyyibPay callback:', { refno, status, orderNo, billcode });
 
-    if (xSignature && !verifyXSignature(params, xSignature)) {
-      console.error('Invalid x_signature');
+    if (!verifyToyyibCallback({ status, order_id: orderNo, refno, hash: receivedHash })) {
+      console.error('Invalid ToyyibPay callback hash');
       return NextResponse.json({ error: 'Invalid signature' }, { status: 403 });
     }
 
-    const paymentStatus = paid ? 'paid' : state === 'due' ? 'pending' : 'failed';
+    const paid = status === '1';
+    const paymentStatus = paid ? 'paid' : status === '2' ? 'pending' : 'failed';
 
-    const updateQuery = orderNo
-      ? supabase.from('orders').update({
-          payment_status: paymentStatus,
-          payment_ref: billId,
-          payment_time: paid ? new Date().toISOString() : null,
-          callback_raw: params,
-          updated_at: new Date().toISOString(),
-        }).eq('order_no', orderNo)
-      : supabase.from('orders').update({
-          payment_status: paymentStatus,
-          payment_ref: billId,
-          payment_time: paid ? new Date().toISOString() : null,
-          callback_raw: params,
-          updated_at: new Date().toISOString(),
-        }).eq('bill_code', billId);
+    const updatePayload = {
+      payment_status: paymentStatus,
+      payment_ref: refno || billcode,
+      payment_time: paid ? new Date().toISOString() : null,
+      callback_raw: params,
+      updated_at: new Date().toISOString(),
+    };
 
-    const { error } = await updateQuery;
-    if (error) console.error('Order update error:', error.message);
+    if (orderNo) {
+      const { data, error } = await supabase.from('orders').update(updatePayload).eq('order_no', orderNo).select('id');
+      if (error) console.error('Order update error:', error.message);
+      else if (data?.length) return NextResponse.json({ status: 'ok' });
+    }
+    if (billcode) {
+      const { error } = await supabase.from('orders').update(updatePayload).eq('bill_code', billcode);
+      if (error) console.error('Order update (billcode) error:', error.message);
+    }
 
     return NextResponse.json({ status: 'ok' });
   } catch (err) {

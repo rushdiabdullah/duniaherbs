@@ -104,7 +104,7 @@ export default function AdminOrdersPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-serif text-2xl font-bold text-stone-100">Pesanan</h1>
-            <p className="text-stone-500 text-xs mt-1">Semua pesanan melalui Billplz — urus penghantaran untuk order berjaya</p>
+            <p className="text-stone-500 text-xs mt-1">Semua pesanan melalui ToyyibPay — urus penghantaran untuk order berjaya</p>
           </div>
           <div className="flex items-center gap-3 text-xs">
             <div className="rounded-lg border border-green-700/30 bg-green-900/10 px-3 py-2 text-green-400">

@@ -21,9 +21,9 @@ yarn-error.log*
 .DS_Store
 *.pem
 
-# large video files (GitHub limit 100MB)
-public/IMG_0596.MP4
-public/IMG_0611.MP4
+# large video files — serve from public/videos/ locally, host externally for production
+public/videos/*.MP4
+public/videos/*.mp4
 
 # typescript
 next-env.d.ts

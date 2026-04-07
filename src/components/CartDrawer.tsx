@@ -375,7 +375,7 @@ export default function CartDrawer() {
                   <div className="flex items-center justify-center gap-3 text-stone-600 text-[10px]">
                     <span>FPX</span><span>•</span><span>Credit Card</span><span>•</span><span>DuitNow QR</span>
                   </div>
-                  <p className="text-center text-stone-600 text-[10px]">Pembayaran selamat melalui Billplz</p>
+                  <p className="text-center text-stone-600 text-[10px]">Pembayaran selamat melalui ToyyibPay</p>
                 </div>
               </form>
             )}

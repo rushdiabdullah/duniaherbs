@@ -10,6 +10,14 @@ const nextConfig = {
       { protocol: 'https', hostname: 'cdswdwhdupcsblmqutuv.supabase.co', pathname: '/**' },
     ],
   },
+  async rewrites() {
+    return [
+      { source: '/IMG_0587.MP4', destination: '/videos/IMG_0587.MP4' },
+      { source: '/IMG_0596.MP4', destination: '/videos/IMG_0596.MP4' },
+      { source: '/IMG_0605.MP4', destination: '/videos/IMG_0605.MP4' },
+      { source: '/IMG_0611.MP4', destination: '/videos/IMG_0611.MP4' },
+    ];
+  },
 };
 
 export default nextConfig;
