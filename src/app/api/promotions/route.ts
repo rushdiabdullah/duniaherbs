@@ -29,6 +29,9 @@ function resolveGroupProductIds(content: Record<string, string>, groupKey: strin
 }
 
 export async function GET() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return NextResponse.json([]);
+  }
   try {
     const { data: rows, error } = await supabase
       .from('promotions')
