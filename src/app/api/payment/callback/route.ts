@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { verifyToyyibCallback } from '@/lib/toyyibpay';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,6 +39,7 @@ export async function POST(req: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
+    const supabase = getSupabase();
     if (orderNo) {
       const { data, error } = await supabase.from('orders').update(updatePayload).eq('order_no', orderNo).select('id');
       if (error) console.error('Order update error:', error.message);

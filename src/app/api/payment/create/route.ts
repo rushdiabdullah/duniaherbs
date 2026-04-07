@@ -4,10 +4,12 @@ import { createToyyibBill } from '@/lib/toyyibpay';
 import { getActivePromotions } from '@/lib/data';
 import { applyPromotion } from '@/lib/promotions';
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
+}
 
 function generateOrderNo() {
   const now = new Date();
@@ -48,6 +50,7 @@ export async function POST(req: NextRequest) {
     if (isNaN(priceNum) || priceNum <= 0) {
       return NextResponse.json({ error: 'Harga tidak sah.' }, { status: 400 });
     }
+    const supabase = getSupabase();
     const itemsList = Array.isArray(items) ? items : [];
     if (itemsList.length > 0) {
       const promotions = await getActivePromotions(supabase);
