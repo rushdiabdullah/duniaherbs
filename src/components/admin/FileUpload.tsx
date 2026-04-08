@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback, useRef, useState } from 'react';
-import { getSupabaseBrowser } from '@/lib/supabase-browser';
 
 type FileUploadProps = {
   accept?: string;
@@ -33,7 +32,6 @@ export default function FileUpload({
     async (files: FileList | File[]) => {
       if (!files.length) return;
       setUploading(true);
-      const supabase = getSupabaseBrowser();
       const urls: string[] = [];
 
       for (let i = 0; i < files.length; i++) {
@@ -42,18 +40,38 @@ export default function FileUpload({
         const ext = file.name.split('.').pop() ?? 'bin';
         const safeName = `${folder}/${Date.now()}-${i}.${ext}`;
 
-        const { error } = await supabase.storage.from('media').upload(safeName, file, {
-          cacheControl: '31536000',
-          upsert: false,
-        });
+        try {
+          // Get a pre-signed upload URL from the server (bypasses RLS)
+          const res = await fetch('/api/upload/signed-url', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ path: safeName, contentType: file.type }),
+          });
 
-        if (error) {
-          alert(`Gagal upload ${file.name}: ${error.message}`);
-          continue;
+          if (!res.ok) {
+            const err = await res.json();
+            alert(`Gagal upload ${file.name}: ${err.error ?? 'Unknown error'}`);
+            continue;
+          }
+
+          const { signedUrl, publicUrl } = await res.json();
+
+          // Upload directly to Supabase Storage using the signed URL
+          const uploadRes = await fetch(signedUrl, {
+            method: 'PUT',
+            headers: { 'Content-Type': file.type },
+            body: file,
+          });
+
+          if (!uploadRes.ok) {
+            alert(`Gagal upload ${file.name}: HTTP ${uploadRes.status}`);
+            continue;
+          }
+
+          urls.push(publicUrl);
+        } catch (err) {
+          alert(`Gagal upload ${file.name}: ${err instanceof Error ? err.message : 'Unknown error'}`);
         }
-
-        const { data: urlData } = supabase.storage.from('media').getPublicUrl(safeName);
-        urls.push(urlData.publicUrl);
       }
 
       if (multiple && onMultiUpload && urls.length > 0) {
