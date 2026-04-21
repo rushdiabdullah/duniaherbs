@@ -2,20 +2,35 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 
 function PaymentContent() {
   const params = useSearchParams();
+  const syncedRef = useRef(false);
 
   // ToyyibPay return URL: status_id, billcode, order_id (GET). Legacy Billplz: billplz[paid], billplz[id]
   const billplzPaid = params.get('billplz[paid]');
   const statusId = params.get('status_id');
+  const billcode = params.get('billcode')?.trim() || '';
 
   const isSuccess = billplzPaid === 'true' || statusId === '1';
   const isPending = billplzPaid === null && statusId === '2';
   const isFailed = billplzPaid === 'false' || statusId === '3';
 
   const orderId = params.get('order_id') || params.get('billplz[id]') || '';
+
+  /** Sandaran jika callback server ToyyibPay gagat: sahkan bill di API & kemas kini order di DB. */
+  useEffect(() => {
+    if (!isSuccess || !billcode || syncedRef.current) return;
+    syncedRef.current = true;
+    void fetch('/api/payment/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ billcode }),
+    }).catch(() => {
+      syncedRef.current = false;
+    });
+  }, [isSuccess, billcode]);
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 py-20">

@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
 
     const fullAddress = [shippingAddress, shippingCity, shippingPostcode, shippingState].filter(Boolean).join(', ');
 
-    await supabase.from('orders').insert({
+    const { error: insertError } = await supabase.from('orders').insert({
       order_no: orderNo,
       product_id: productId || null,
       product_name: productName,
@@ -99,6 +99,14 @@ export async function POST(req: NextRequest) {
       bill_code: billCode,
       payment_status: 'pending',
     });
+
+    if (insertError) {
+      console.error('Order insert error:', insertError.message);
+      return NextResponse.json(
+        { error: 'Gagal simpan pesanan. Cuba semula atau hubungi admin.', detail: insertError.message },
+        { status: 500 },
+      );
+    }
 
     return NextResponse.json({
       billId: billCode,

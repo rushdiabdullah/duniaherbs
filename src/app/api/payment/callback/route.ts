@@ -9,11 +9,39 @@ function getSupabase() {
   );
 }
 
+/** ToyyibPay menghantar POST (biasanya x-www-form-urlencoded). Baca body sekali sahaja. */
+async function readToyyibCallbackParams(req: NextRequest): Promise<Record<string, string>> {
+  const params: Record<string, string> = {};
+  const ct = (req.headers.get('content-type') || '').toLowerCase();
+
+  if (ct.includes('multipart/form-data')) {
+    try {
+      const formData = await req.formData();
+      formData.forEach((value, key) => {
+        params[key] = String(value);
+      });
+    } catch {
+      /* empty */
+    }
+    return params;
+  }
+
+  try {
+    const raw = (await req.text()).trim();
+    if (raw) {
+      new URLSearchParams(raw).forEach((v, k) => {
+        params[k] = v;
+      });
+    }
+  } catch {
+    /* empty */
+  }
+  return params;
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
-    const params: Record<string, string> = {};
-    formData.forEach((value, key) => { params[key] = String(value); });
+    const params = await readToyyibCallbackParams(req);
 
     const refno = params.refno ?? '';
     const status = params.status ?? '';

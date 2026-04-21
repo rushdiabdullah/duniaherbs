@@ -34,7 +34,7 @@ const statusStyles: Record<string, string> = {
 
 const statusLabel: Record<string, string> = {
   paid: 'Berjaya',
-  pending: 'Menunggu',
+  pending: 'Menunggu bayaran',
   failed: 'Gagal',
 };
 
@@ -46,7 +46,8 @@ const deliveryLabel: Record<string, string> = {
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<string>('paid');
+  /** Default "Semua" supaya staf nampak pesanan baru (termasuk menunggu bayaran) tanpa terlepas tab. */
+  const [filter, setFilter] = useState<string>('all');
   const [deliveryFilter, setDeliveryFilter] = useState<string>('pending');
   const [shippingModal, setShippingModal] = useState<Order | null>(null);
   const [trackingInput, setTrackingInput] = useState('');
@@ -66,11 +67,13 @@ export default function AdminOrdersPage() {
   const shipped = paidOrders.filter((o) => (o.delivery_status || 'pending') === 'shipped');
 
   const displayOrders =
-    filter === 'paid'
-      ? deliveryFilter === 'pending'
-        ? toShip
-        : shipped
-      : orders.filter((o) => o.payment_status === filter);
+    filter === 'all'
+      ? orders
+      : filter === 'paid'
+        ? deliveryFilter === 'pending'
+          ? toShip
+          : shipped
+        : orders.filter((o) => o.payment_status === filter);
 
   const totalPaid = paidOrders.reduce((sum, o) => sum + o.amount_cents, 0);
   const totalPending = orders.filter((o) => o.payment_status === 'pending').length;
@@ -104,7 +107,7 @@ export default function AdminOrdersPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-serif text-2xl font-bold text-stone-100">Pesanan</h1>
-            <p className="text-stone-500 text-xs mt-1">Semua pesanan melalui ToyyibPay — urus penghantaran untuk order berjaya</p>
+            <p className="text-stone-500 text-xs mt-1">Semua pesanan melalui ToyyibPay — tab &quot;Semua&quot; tunjuk semua status; &quot;Berjaya&quot; untuk urus penghantaran</p>
           </div>
           <div className="flex items-center gap-3 text-xs">
             <div className="rounded-lg border border-green-700/30 bg-green-900/10 px-3 py-2 text-green-400">
@@ -127,13 +130,13 @@ export default function AdminOrdersPage() {
 
         <div className="flex flex-wrap gap-2">
           <span className="text-stone-500 text-xs self-center mr-1">Pembayaran:</span>
-          {['paid', 'pending', 'failed'].map((f) => (
+          {(['all', 'paid', 'pending', 'failed'] as const).map((f) => (
             <button
               key={f}
               onClick={() => { setFilter(f); if (f === 'paid') setDeliveryFilter('pending'); }}
               className={`rounded-lg px-3 py-1.5 text-xs transition ${filter === f ? 'bg-herb-gold/20 text-herb-gold border border-herb-gold/50' : 'text-stone-500 border border-stone-700 hover:text-stone-300'}`}
             >
-              {statusLabel[f] || f}
+              {f === 'all' ? 'Semua' : statusLabel[f] || f}
             </button>
           ))}
           {filter === 'paid' && (
@@ -160,7 +163,7 @@ export default function AdminOrdersPage() {
         <div className="rounded-xl border border-stone-700 bg-herb-surface/60 py-12 text-center">
           <p className="text-stone-500 text-sm">
             Tiada pesanan
-            {` (${statusLabel[filter]})`}
+            {filter === 'all' ? '' : ` (${filter === 'paid' ? statusLabel.paid : statusLabel[filter] || filter})`}
             {filter === 'paid' && ` — ${deliveryLabel[deliveryFilter]}`}
           </p>
         </div>

@@ -101,3 +101,76 @@ export function verifyToyyibCallback(params: {
     .digest('hex');
   return expected.toLowerCase() === String(params.hash).toLowerCase();
 }
+
+/** Row from ToyyibPay getBillTransactions (subset of fields we use). */
+export type ToyyibBillTransactionRow = {
+  billpaymentStatus?: string;
+  billExternalReferenceNo?: string;
+  billpaymentInvoiceNo?: string;
+};
+
+/**
+ * Fetch payment rows for a bill from ToyyibPay (server-side).
+ * Used to confirm FPX / DuitNow status when the server callback is delayed or fails.
+ */
+export async function getBillTransactions(billCode: string): Promise<ToyyibBillTransactionRow[]> {
+  if (!billCode.trim()) {
+    throw new Error('Bill code kosong');
+  }
+
+  async function post(params: URLSearchParams): Promise<unknown> {
+    const res = await fetch(`${BASE_URL}/index.php/api/getBillTransactions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+    });
+    const text = await res.text();
+    try {
+      return JSON.parse(text);
+    } catch {
+      throw new Error(`getBillTransactions: bukan JSON — ${text.slice(0, 200)}`);
+    }
+  }
+
+  const code = billCode.trim();
+  let data: unknown;
+
+  if (USER_SECRET_KEY) {
+    const body = new URLSearchParams();
+    body.set('userSecretKey', USER_SECRET_KEY);
+    body.set('billCode', code);
+    data = await post(body);
+    if (data && typeof data === 'object' && !Array.isArray(data) && 'status' in data && (data as { status: string }).status === 'error') {
+      const msg = String((data as { message?: string }).message || '').toLowerCase();
+      if (msg.includes('invalid') && msg.includes('secret')) {
+        const fallback = new URLSearchParams();
+        fallback.set('billCode', code);
+        data = await post(fallback);
+      } else {
+        throw new Error((data as { message?: string }).message || JSON.stringify(data));
+      }
+    }
+  } else {
+    const body = new URLSearchParams();
+    body.set('billCode', code);
+    data = await post(body);
+  }
+
+  if (data && typeof data === 'object' && !Array.isArray(data) && 'status' in data && (data as { status: string }).status === 'error') {
+    const msg = (data as { message?: string }).message || JSON.stringify(data);
+    throw new Error(msg);
+  }
+
+  if (!Array.isArray(data)) return [];
+  return data as ToyyibBillTransactionRow[];
+}
+
+/** True if any transaction row is successful (billpaymentStatus === "1"). */
+export function transactionsIndicatePaid(rows: ToyyibBillTransactionRow[]): boolean {
+  return rows.some((r) => String(r.billpaymentStatus ?? '') === '1');
+}
+
+export function bestPaymentRefFromTransactions(rows: ToyyibBillTransactionRow[]): string {
+  const paid = rows.find((r) => String(r.billpaymentStatus ?? '') === '1');
+  return String(paid?.billpaymentInvoiceNo ?? paid?.billExternalReferenceNo ?? '').trim();
+}
