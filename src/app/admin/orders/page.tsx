@@ -46,16 +46,23 @@ const deliveryLabel: Record<string, string> = {
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState('');
   /** Default "Semua" supaya staf nampak pesanan baru (termasuk menunggu bayaran) tanpa terlepas tab. */
   const [filter, setFilter] = useState<string>('all');
   const [deliveryFilter, setDeliveryFilter] = useState<string>('pending');
   const [shippingModal, setShippingModal] = useState<Order | null>(null);
   const [trackingInput, setTrackingInput] = useState('');
   const [saving, setSaving] = useState(false);
+  const [shipError, setShipError] = useState('');
 
   async function fetchOrders() {
+    setFetchError('');
     const supabase = getSupabaseBrowser();
-    const { data } = await supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(200);
+    const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false }).limit(200);
+    if (error) {
+      console.error('Fetch orders error:', error.message);
+      setFetchError(`Gagal muatkan pesanan: ${error.message}`);
+    }
     setOrders((data as Order[]) ?? []);
     setLoading(false);
   }
@@ -81,6 +88,7 @@ export default function AdminOrdersPage() {
   async function handleMarkShipped() {
     if (!shippingModal || !trackingInput.trim()) return;
     setSaving(true);
+    setShipError('');
     const supabase = getSupabaseBrowser();
     const { error } = await supabase
       .from('orders')
@@ -93,6 +101,7 @@ export default function AdminOrdersPage() {
       .eq('id', shippingModal.id);
     if (error) {
       console.error(error);
+      setShipError(`Gagal simpan: ${error.message}`);
     } else {
       setShippingModal(null);
       setTrackingInput('');
@@ -156,6 +165,13 @@ export default function AdminOrdersPage() {
           )}
         </div>
       </div>
+
+      {fetchError && (
+        <div className="rounded-xl border border-red-700/40 bg-red-900/10 px-4 py-3 text-sm text-red-400">
+          {fetchError}
+          <button onClick={fetchOrders} className="ml-3 underline text-red-300 hover:text-red-100">Cuba semula</button>
+        </div>
+      )}
 
       {loading ? (
         <p className="text-stone-500 text-sm py-8 text-center">Memuatkan...</p>
@@ -288,10 +304,11 @@ export default function AdminOrdersPage() {
                 autoFocus
               />
             </div>
+            {shipError && <p className="text-red-400 text-xs mb-3">{shipError}</p>}
             <div className="flex justify-end gap-2">
               <button
                 type="button"
-                onClick={() => !saving && setShippingModal(null)}
+                onClick={() => { if (!saving) { setShippingModal(null); setShipError(''); } }}
                 className="rounded-xl border border-stone-700 px-4 py-2 text-sm text-stone-400 hover:text-stone-200 transition"
               >
                 Batal

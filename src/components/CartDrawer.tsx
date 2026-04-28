@@ -166,8 +166,9 @@ export default function CartDrawer() {
         clearSavedCustomer();
       }
 
-      clearCart();
+      // Kosongkan cart SELEPAS redirect berjaya (tetapkan href dulu, baru clear)
       window.location.href = data.paymentUrl;
+      clearCart();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Ralat berlaku');
       setLoading(false);

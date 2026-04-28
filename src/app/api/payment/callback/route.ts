@@ -68,14 +68,37 @@ export async function POST(req: NextRequest) {
     };
 
     const supabase = getSupabase();
+    let updated = false;
+
     if (orderNo) {
-      const { data, error } = await supabase.from('orders').update(updatePayload).eq('order_no', orderNo).select('id');
-      if (error) console.error('Order update error:', error.message);
-      else if (data?.length) return NextResponse.json({ status: 'ok' });
+      const { data, error } = await supabase
+        .from('orders')
+        .update(updatePayload)
+        .eq('order_no', orderNo)
+        .select('id');
+      if (error) {
+        console.error('Order update error:', error.message);
+      } else if (data && data.length > 0) {
+        updated = true;
+      }
     }
-    if (billcode) {
-      const { error } = await supabase.from('orders').update(updatePayload).eq('bill_code', billcode);
-      if (error) console.error('Order update (billcode) error:', error.message);
+
+    if (!updated && billcode) {
+      const { data, error } = await supabase
+        .from('orders')
+        .update(updatePayload)
+        .eq('bill_code', billcode)
+        .select('id');
+      if (error) {
+        console.error('Order update (billcode) error:', error.message);
+      } else if (data && data.length > 0) {
+        updated = true;
+      }
+    }
+
+    if (!updated) {
+      console.warn('ToyyibPay callback: no matching order found', { orderNo, billcode });
+      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
 
     return NextResponse.json({ status: 'ok' });

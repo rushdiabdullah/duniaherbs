@@ -62,6 +62,8 @@ export async function POST(req: NextRequest) {
     }
     const supabase = getSupabase();
     const itemsList = Array.isArray(items) ? items : [];
+
+    // Always recalculate total server-side when items are provided (prevent price tampering)
     if (itemsList.length > 0) {
       const promotions = await getActivePromotions(supabase);
       let total = 0;
@@ -72,6 +74,9 @@ export async function POST(req: NextRequest) {
       }
       priceNum = total;
     }
+    if (isNaN(priceNum) || priceNum <= 0) {
+      return NextResponse.json({ error: 'Harga tidak sah selepas semakan promosi.' }, { status: 400 });
+    }
     const amountCents = Math.round(priceNum * 100);
 
     const orderNo = generateOrderNo();
@@ -81,22 +86,11 @@ export async function POST(req: NextRequest) {
       : `Order ${orderNo} - ${productName} x${qty}`.slice(0, 200);
 
     const phone = customerPhone.startsWith('+6') ? customerPhone : `+6${customerPhone}`;
-
-    const { billCode, paymentUrl } = await createToyyibBill({
-      name: customerName,
-      email: customerEmail || '',
-      mobile: phone,
-      amountCents,
-      description: desc,
-      callbackUrl: `${appUrl}/api/payment/callback`,
-      returnUrl: `${appUrl}/payment/status`,
-      orderReference: orderNo,
-    });
-
     const fullAddress = [shippingAddress, shippingCity, shippingPostcode, shippingState].filter(Boolean).join(', ');
-
     const safeProductId = toOrderProductId(productId);
 
+    // Simpan order sebagai 'pending' DULU sebelum cipta bill ToyyibPay.
+    // Ini pastikan rekod wujud walaupun redirect/callback lambat.
     const row = {
       order_no: orderNo,
       product_id: safeProductId,
@@ -108,7 +102,7 @@ export async function POST(req: NextRequest) {
       customer_phone: customerPhone,
       shipping_address: fullAddress,
       items: items || null,
-      bill_code: billCode,
+      bill_code: '',
       payment_status: 'pending' as const,
     };
 
@@ -131,6 +125,29 @@ export async function POST(req: NextRequest) {
         { status: 500 },
       );
     }
+
+    // Cipta bill ToyyibPay selepas row berjaya disimpan
+    let billCode: string;
+    let paymentUrl: string;
+    try {
+      ({ billCode, paymentUrl } = await createToyyibBill({
+        name: customerName,
+        email: customerEmail || '',
+        mobile: phone,
+        amountCents,
+        description: desc,
+        callbackUrl: `${appUrl}/api/payment/callback`,
+        returnUrl: `${appUrl}/payment/status`,
+        orderReference: orderNo,
+      }));
+    } catch (billErr) {
+      // Rollback: padam order supaya pelanggan boleh cuba semula
+      await supabase.from('orders').delete().eq('order_no', orderNo);
+      throw billErr;
+    }
+
+    // Kemas kini bill_code pada row yang sudah disimpan
+    await supabase.from('orders').update({ bill_code: billCode }).eq('order_no', orderNo);
 
     return NextResponse.json({
       billId: billCode,

@@ -19,9 +19,16 @@ function PaymentContent() {
 
   const orderId = params.get('order_id') || params.get('billplz[id]') || '';
 
-  /** Sandaran jika callback server ToyyibPay gagat: sahkan bill di API & kemas kini order di DB. */
+  /**
+   * Sandaran jika callback server ToyyibPay gagal/lambat:
+   * - Jalan apabila status_id === '1' (success) ATAU status_id === '2' (pending)
+   *   supaya order pending pun disemak dan dikemas kini jika ToyyibPay sebenarnya sudah bayar.
+   * - Memerlukan billcode dalam query string.
+   */
   useEffect(() => {
-    if (!isSuccess || !billcode || syncedRef.current) return;
+    if (!billcode || syncedRef.current) return;
+    const shouldSync = isSuccess || statusId === '2';
+    if (!shouldSync) return;
     syncedRef.current = true;
     void fetch('/api/payment/sync', {
       method: 'POST',
@@ -30,7 +37,7 @@ function PaymentContent() {
     }).catch(() => {
       syncedRef.current = false;
     });
-  }, [isSuccess, billcode]);
+  }, [isSuccess, billcode, statusId]);
 
   return (
     <div className="min-h-screen flex items-center justify-center px-6 py-20">
