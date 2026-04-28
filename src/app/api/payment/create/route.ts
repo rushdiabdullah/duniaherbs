@@ -20,6 +20,16 @@ function generateOrderNo() {
   return `DH${y}${m}${d}${rand}`;
 }
 
+/** `product_id` references products(id); must be real UUID or null. */
+function toOrderProductId(raw: unknown): string | null {
+  if (raw == null || raw === '') return null;
+  const s = String(raw);
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s)) {
+    return null;
+  }
+  return s;
+}
+
 export async function POST(req: NextRequest) {
   try {
     if (!process.env.TOYYIBPAY_USER_SECRET_KEY?.trim() || !process.env.TOYYIBPAY_CATEGORY_CODE?.trim()) {
@@ -85,9 +95,11 @@ export async function POST(req: NextRequest) {
 
     const fullAddress = [shippingAddress, shippingCity, shippingPostcode, shippingState].filter(Boolean).join(', ');
 
-    const { error: insertError } = await supabase.from('orders').insert({
+    const safeProductId = toOrderProductId(productId);
+
+    const row = {
       order_no: orderNo,
-      product_id: productId || null,
+      product_id: safeProductId,
       product_name: productName,
       quantity: qty,
       amount_cents: amountCents,
@@ -97,11 +109,23 @@ export async function POST(req: NextRequest) {
       shipping_address: fullAddress,
       items: items || null,
       bill_code: billCode,
-      payment_status: 'pending',
-    });
+      payment_status: 'pending' as const,
+    };
+
+    let insertError = (await supabase.from('orders').insert(row)).error;
+
+    const fkMismatch =
+      !!insertError &&
+      (insertError.code === '23503' ||
+        /foreign key|violates foreign key/i.test(insertError.message || ''));
+
+    if (fkMismatch && safeProductId) {
+      console.warn('Order insert FK failed; retry without product_id', insertError?.message);
+      insertError = (await supabase.from('orders').insert({ ...row, product_id: null })).error;
+    }
 
     if (insertError) {
-      console.error('Order insert error:', insertError.message);
+      console.error('Order insert error:', insertError.message, insertError);
       return NextResponse.json(
         { error: 'Gagal simpan pesanan. Cuba semula atau hubungi admin.', detail: insertError.message },
         { status: 500 },
